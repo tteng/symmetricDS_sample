@@ -1,0 +1,126 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;2.&nbsp;Setup</title><link rel="stylesheet" href="css/docbook-style.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.72.0"><link rel="start" href="user-guide.html" title="SymmetricDS User Guide"><link rel="up" href="user-guide.html" title="SymmetricDS User Guide"><link rel="prev" href="introduction.html" title="Chapter&nbsp;1.&nbsp;Introduction"><link rel="next" href="config.html" title="Chapter&nbsp;3.&nbsp;Configuration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns:fo="http://www.w3.org/1999/XSL/Format" id="banner"><a style="border:none;" href="http://www.symmetricds.org/" title="SymmetricDS User Guide"><img style="border:none;" alt="SymmetricDS" src="images/banner-logo.gif"></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="setup"></a>Chapter&nbsp;2.&nbsp;Setup</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="setup.html#setup-engine-files">2.1. Engine Files</a></span></dt></dl></div>
+	
+	
+	
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="setup-engine-files"></a>2.1.&nbsp;Engine Files</h2></div></div></div>
+	
+		<p>
+		Each node requires properties that allow it to connect to a database and
+		register with a parent node. Properties are configured in a file named
+		<code class="code">xxxxx.properties</code>
+		that is placed in the engines directory of the SymmetricDS install. The
+		file is usually named according to the engine.name, but it is not a
+		requirement.
+		</p>
+		
+		<p>
+		To give a node its identity, the following properties are required. Any
+		other properties found in
+		<code class="code">conf/symmetric.properties</code>
+		can be overridden for a specific engine in an engine's properties file.
+		If the properties are changed in
+		<code class="code">conf/symmetric.properties</code>
+		they will take effect across all engines deployed to the server. Note
+		that you can use the variable
+		<code class="literal">$(hostName)</code>
+		to represent the host name of the machine when defining these properties
+		(for example, external.id=$(hostName) ).
+		</p>
+		
+		<div class="variablelist"><dl><dt><span class="term">
+		<span><strong class="command">engine.name</strong></span>
+		</span></dt><dd>
+		<p>This is an arbitrary name that is used to access a specific
+		engine using an HTTP URL. Each node configured in the engines directory
+		must have a unique engine name. The engine name is also used for the
+		domain name of registered JMX beans.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">group.id</strong></span>
+		</span></dt><dd>
+		<p>The node group that this node is a member of.
+		Synchronization is specified between node groups, which means you only
+		need to specify it once for multiple nodes in the same group.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">external.id</strong></span>
+		</span></dt><dd>
+		<p>The external id for this node has meaning to the user and
+		provides integration into the system where it is deployed. For example,
+		it might be a retail store number or a region number. The external id
+		can be used in expressions for conditional and subset data
+		synchronization. Behind the scenes, each node has a unique sequence
+		number for tracking synchronization events. That makes it possible to
+		assign the same external id to multiple nodes, if desired.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">sync.url</strong></span>
+		</span></dt><dd>
+		<p>
+		The URL where this node can be contacted for synchronization. At startup
+		and during each heartbeat, the node updates its entry in the database
+		with this URL. The sync url is of the format:
+		<code class="code">http://{hostname}:{port}/{webcontext}/sync/{engine.name}</code>
+		.
+		</p>
+		
+		<p>The {webcontext} is blank for a standalone deployment. It
+		will typically be the name of the war file for an application server
+		deployment.</p>
+		
+		<p>The {engine.name} can be left blank if there is only one
+		engine deployed in a SymmetricDS server.</p>
+		</dd></dl></div>
+		
+		<p>When a new node is first started, it is has no information
+		about synchronizing. It contacts the registration server in order to
+		join the network and receive its configuration. The configuration for
+		all nodes is stored on the registration server, and the URL must be
+		specified in the following property:</p>
+		
+		<div class="variablelist"><dl><dt><span class="term">
+		<span><strong class="command">registration.url</strong></span>
+		</span></dt><dd>
+		<p>The URL where this node can connect for registration to
+		receive its configuration. The registration server is part of
+		SymmetricDS and is enabled as part of the deployment. This is typically
+		equal to the value of the sync.url of the registration server.</p>
+		</dd></dl></div>
+		
+		<div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3>
+		<p>
+		Note that a
+		<span class="emphasis"><em>registration server node</em></span>
+		is defined as one whose
+		<code class="literal">registration.url</code>
+		is either (a) blank, or (b) identical to its
+		<code class="literal">sync.url</code>
+		.
+		</p>
+		</div>
+		
+		<p>For a deployment where the database connection pool should
+		be created using a JDBC driver, set the following properties:</p>
+		
+		<div class="variablelist"><dl><dt><span class="term">
+		<span><strong class="command">db.driver</strong></span>
+		</span></dt><dd>
+		<p>The class name of the JDBC driver.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">db.url</strong></span>
+		</span></dt><dd>
+		<p>The JDBC URL used to connect to the database.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">db.user</strong></span>
+		</span></dt><dd>
+		<p>The database username, which is used to login, create, and
+		update SymmetricDS tables.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">db.password</strong></span>
+		</span></dt><dd>
+		<p>The password for the database user.</p>
+		</dd></dl></div>
+        
+        <p>See <a href="parameters.html#ap01-startup" title="B.1.&nbsp;Startup Parameters">Section&nbsp;B.1, &#8220;Startup Parameters&#8221;</a>, for additional parameters that can be specified in the engine properties file.</p>
+	</div>
+</div><div xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="30%" align="left"><a accesskey="p" href="introduction.html">Prev</a>&nbsp;</td><td width="40%" align="center"><a accesskey="h" href="user-guide.html">Home</a></td><td width="30%" align="right">&nbsp;<a accesskey="n" href="config.html">Next</a></td></tr><tr><td width="30%" align="left" valign="top">Chapter&nbsp;1.&nbsp;Introduction&nbsp;</td><td width="40%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.symmetricds.org/" title="SymmetricDS">SymmetricDS
+                                        </a></span></td><td width="30%" align="right" valign="top">&nbsp;Chapter&nbsp;3.&nbsp;Configuration</td></tr></table></div></body></html>

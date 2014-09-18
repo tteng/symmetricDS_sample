@@ -1,0 +1,732 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;5.&nbsp;Advanced Topics</title><link rel="stylesheet" href="css/docbook-style.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.72.0"><link rel="start" href="user-guide.html" title="SymmetricDS User Guide"><link rel="up" href="user-guide.html" title="SymmetricDS User Guide"><link rel="prev" href="manage.html" title="Chapter&nbsp;4.&nbsp;Manage"><link rel="next" href="developer.html" title="Chapter&nbsp;6.&nbsp;Developer"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns:fo="http://www.w3.org/1999/XSL/Format" id="banner"><a style="border:none;" href="http://www.symmetricds.org/" title="SymmetricDS User Guide"><img style="border:none;" alt="SymmetricDS" src="images/banner-logo.gif"></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="advanced"></a>Chapter&nbsp;5.&nbsp;Advanced Topics</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="advanced.html#advanced-sync">5.1. Advanced Synchronization</a></span></dt><dd><dl><dt><span class="section"><a href="advanced.html#bi-direction-sync">5.1.1. Bi-Directional Synchronization</a></span></dt><dt><span class="section"><a href="advanced.html#multi-tier">5.1.2. Multi-Tiered Synchronization</a></span></dt><dd><dl><dt><span class="section"><a href="advanced.html#registration-redirect">5.1.2.1. Registration Redirect</a></span></dt></dl></dd></dl></dd><dt><span class="section"><a href="advanced.html#deployment-options">5.2. Deployment Options</a></span></dt><dd><dl><dt><span class="section"><a href="advanced.html#deployment-options-web-archive">5.2.1. Web Archive (WAR)</a></span></dt><dt><span class="section"><a href="advanced.html#deployment-options-embedded">5.2.2. Embedded</a></span></dt><dt><span class="section"><a href="advanced.html#deployment-options-standalone">5.2.3. Standalone</a></span></dt></dl></dd><dt><span class="section"><a href="advanced.html#running-service">5.3. Running SymmetricDS as a Service</a></span></dt><dd><dl><dt><span class="section"><a href="advanced.html#running-service-windows">5.3.1. Running as a Windows Service</a></span></dt><dt><span class="section"><a href="advanced.html#running-service-unix">5.3.2. Running as a Linux/Unix daemon</a></span></dt></dl></dd><dt><span class="section"><a href="advanced.html#clustering">5.4. Clustering</a></span></dt><dt><span class="section"><a href="advanced.html#encrypted-passwords">5.5. Encrypted Passwords</a></span></dt><dt><span class="section"><a href="advanced.html#secure-transport">5.6. Secure Transport</a></span></dt><dd><dl><dt><span class="section"><a href="advanced.html#secure-transport-sym">5.6.1. Sym Launcher</a></span></dt><dt><span class="section"><a href="advanced.html#secure-transport-tomcat">5.6.2. Tomcat</a></span></dt><dt><span class="section"><a href="advanced.html#secure-transport-keystore">5.6.3. Keystores</a></span></dt><dt><span class="section"><a href="advanced.html#secure-transport-keys">5.6.4. Generating Keys</a></span></dt></dl></dd><dt><span class="section"><a href="advanced.html#basic-auth">5.7. Basic Authentication</a></span></dt><dt><span class="section"><a href="advanced.html#dataloaders">5.8. Data Loaders</a></span></dt><dd><dl><dt><span class="section"><a href="advanced.html#mysqlbulk">5.8.1. Bulk Data Loaders</a></span></dt><dt><span class="section"><a href="advanced.html#mongodb">5.8.2. MongoDB</a></span></dt></dl></dd><dt><span class="section"><a href="advanced.html#admin-jmx">5.9. Java Management Extensions</a></span></dt><dt><span class="section"><a href="advanced.html#jms-publishing">5.10. JMS Publishing</a></span></dt></dl></div>
+    
+    <p>
+       This chapter focuses on a variety of topics, including deployment options, jobs, clustering, encryptions, synchronization control,
+       and configuration of SymmetricDS.
+    </p>
+ <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="advanced-sync"></a>5.1.&nbsp;Advanced Synchronization</h2></div></div></div>
+    
+ <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="bi-direction-sync"></a>5.1.1.&nbsp;Bi-Directional Synchronization</h3></div></div></div>
+        
+        <p>
+            SymmetricDS allows tables to be synchronized bi-directionally.  Note that an outgoing
+            synchronization does not process changes during an incoming synchronization on the same node unless the trigger
+            was created with the <code class="literal">sync_on_incoming_batch</code> flag set.  If the <code class="literal">sync_on_incoming_batch</code> flag
+            is set, then update loops are prevented by a feature that is available in most database dialects.
+            More specifically, during an incoming synchronization the source <code class="literal">node_id</code> is put into a database session variable that is
+            available to the database trigger.  Data events are not generated if the target <code class="literal">node_id</code>
+            on an outgoing synchronization is equal to the source <code class="literal">node_id</code>.
+        </p>
+        <p>
+            By default, only the columns that changed will be updated in the target system.
+        </p>
+        <p>
+            Conflict resolution strategies can be configured for specific links and/or sets of tables.
+        </p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="multi-tier"></a>5.1.2.&nbsp;Multi-Tiered Synchronization</h3></div></div></div>
+        
+        <p>
+            There may be scenarios where data needs to flow through multiple tiers of nodes that
+            are organized in a tree-like network with each tier requiring a different subset of data.  For example,
+            you may have a system where the lowest tier may be a computer or device located in a store.  Those devices
+            may connect to a server located physically at that store.  Then the store server may communicate with
+            a corporate server for example.  In this case, the three tiers would be device, store, and corporate.
+            Each tier is typically represented by a node group.  Each node in
+            the tier would belong to the node group representing that tier.
+        </p>
+        <p>
+            A node can only pull and push data to other nodes that are represented in the node's <a href="data-model.html#table_node" title="A.17.&nbsp;NODE">NODE</a>
+            table and in cases where that node's <code class="literal">sync_enabled</code> column is set to 1.
+            Because of this, a tree-like
+            hierarchy of nodes can be created by having only a subset of nodes belonging to the same node group represented at the different branches of the tree.
+        </p>
+        <p>
+            If auto registration is turned <span class="emphasis"><em>off</em></span>, then this setup must occur manually by opening registration
+            for the desired nodes at the desired parent node and by configuring each node's <code class="literal">registration.url</code>
+             to be the parent node's URL.
+            The parent node is always tracked by the setting of the parent's <code class="literal">node_id</code> in the <code class="literal">created_at_node_id</code> column of the new node.
+            When a node registers and downloads its configuration it is always provided the configuration for nodes
+            that might register with the node itself based on the Node Group Links defined in the parent node.
+        </p>
+
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="registration-redirect"></a>5.1.2.1.&nbsp;Registration Redirect</h4></div></div></div>
+        
+        <p>
+            When deploying a multi-tiered system it may be advantageous to have only one registration server, even though the parent node of a registering node
+            could be any of a number of nodes in the system.  In SymmetricDS the parent node is always the node that a child registers with.  The
+            <a href="data-model.html#table_registration_redirect" title="A.31.&nbsp;REGISTRATION_REDIRECT">REGISTRATION_REDIRECT</a> table allows a single node, usually the root server in the network, to
+            redirect registering nodes to their true parents.  It does so based on a mapping found in the table of the external id (<code class="literal">registrant_external_id</code>) to the parent's node
+            id (<code class="literal">registration_node_id</code>).
+        </p>
+        <p>
+            For example, if it is desired to have a series of regional servers that workstations at retail stores get assigned to based on their <code class="literal">external_id</code>, the store number, then
+            you might insert into <a href="data-model.html#table_registration_redirect" title="A.31.&nbsp;REGISTRATION_REDIRECT">REGISTRATION_REDIRECT</a> the store number as the <code class="literal">registrant_external_id</code> and the <code class="literal">node_id</code> of
+            the assigned region as the <code class="literal">registration_node_id</code>.  When a workstation at the store registers, the root server sends an HTTP redirect to the <code class="literal">sync_url</code> of the node
+            that matches the <code class="literal">registration_node_id</code>.
+        </p>
+        <div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3>
+            <p>Please see <a href="manage.html#manage-node-initial-load" title="4.2.2.&nbsp;Initial Loads">Section&nbsp;4.2.2, &#8220;Initial Loads&#8221;</a> for important details around initial loads
+            and registration when using registration redirect.
+            </p>
+            </div>
+
+    </div>
+    </div>
+</div>
+
+
+<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="deployment-options"></a>5.2.&nbsp;Deployment Options</h2></div></div></div>
+        
+        <p>An instance of SymmetricDS can be deployed in several ways:</p>
+        <div class="itemizedlist"><ul type="disc"><li>
+                <p>Web application archive (WAR) deployed to an application server</p>
+                <p>
+                    This option means packaging a WAR file and deploying to your favorite
+                    web server, like Apache Tomcat.  It's a little more work, but you
+                    can configure the web server to do whatever you need.  SymmetricDS can also
+                    be embedded in an existing web application, if desired.
+                </p>
+            </li><li>
+                <p>Standalone service that embeds Jetty web server</p>
+                <p>
+                    This option means running the <span class="emphasis"><em>sym</em></span> command line, which launches the built-in Jetty web server.
+                    This is a simple option because it is already provided, but you lose the flexibility to configure
+                    the web server any further.
+                </p>
+            </li><li>
+                <p>Embedded as a Java library in an application</p>
+                <p>
+                    This option means you must write a wrapper Java program that runs
+                    SymmetricDS.  You would probably use Jetty web server, which is also embeddable.
+                    You could bring up an embedded database like Derby or H2.  You could configure the
+                    web server, database, or SymmetricDS to do whatever you needed, but it's also
+                    the most work of the three options discussed thus far.
+                </p>
+            </li></ul></div>
+        <p>
+            The deployment model you choose depends on how much flexibility you need versus how easy you
+            want it to be.  Both Jetty and Tomcat are excellent, scalable web servers that
+            compete with each other and have great performance.  Most people choose either
+            the <span class="emphasis"><em>Standalone</em></span> or <span class="emphasis"><em>Web Archive</em></span> with Tomcat 5.5 or 6.  Deploying to Tomcat
+            is a good middle-of-the-road decision that requires a little more work for more flexibility.
+        </p>
+        <p>Next, we will go into a little more detail on the first three deployment options listed above.</p>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="deployment-options-web-archive"></a>5.2.1.&nbsp;Web Archive (WAR)</h3></div></div></div>
+            
+            <p>
+                As a web application archive, a WAR is deployed to an application server,
+                such as Tomcat, Jetty, or JBoss.  The structure of the archive will have a <code class="literal">web.xml</code>
+                file in the <code class="literal">WEB-INF</code> folder, an appropriately configured <code class="filename">symmetric.properties</code> file in the <code class="literal">WEB-INF/classes</code> folder,
+                and the required JAR files in the <code class="literal">WEB-INF/lib</code> folder.
+            </p>
+            <div class="mediaobject"><img src="./images/symmetric_war.gif"></div>
+            <p>
+                A war file can be generated using the standalone installation's <code class="literal">symadmin</code> utility and the
+                <code class="literal">create-war</code> subcommand.  The command requires the name of the war file to generate.  It
+                essentially packages up the web directory, the conf directory and includes an optional
+                properties file.  Note that if a properties file is included, it will be copied to
+                WEB-INF/classes/symmetric.properties.  This is the same location conf/symmetric.properties
+                would have been copied to.  The generated war distribution uses the same web.xml as the standalone
+                deployment.
+            </p>
+            <p>
+                <span><strong class="command">../bin/symadmin -p my-symmetric-ds.properties create-war /some/path/to/symmetric-ds.war</strong></span>
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="deployment-options-embedded"></a>5.2.2.&nbsp;Embedded</h3></div></div></div>
+            
+            <p>
+                A Java application with the SymmetricDS Java Archive (JAR) library on its
+                classpath can use the <code class="literal">SymmetricWebServer</code> to start the server.
+            </p>
+            <pre class="programlisting">
+import org.jumpmind.symmetric.SymmetricWebServer;
+
+public class StartSymmetricEngine {
+
+    public static void main(String[] args) throws Exception {
+
+        SymmetricWebServer node = new SymmetricWebServer(
+                                   "classpath://my-application.properties", "conf/web_dir");
+
+        // this will create the database, sync triggers, start jobs running
+        node.start(8080);
+
+        // this will stop the node
+        node.stop();
+    }
+
+}</pre>
+            <p>
+                This example starts the SymmetricDS server on port 8080.
+                The configuration properties file, <code class="filename">my-application.properties</code>,
+                is packaged in the application to provide properties that override the SymmetricDS
+                default values.  The second parameter to the constructor points to the web directory.
+                The default location is <code class="code">../web</code>.  In this example the web directory is located
+                at <code class="code">conf/web_dir</code>.  The web.xml is expected to be found at <code class="code">conf/web_dir/WEB-INF/web.xml</code>.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="deployment-options-standalone"></a>5.2.3.&nbsp;Standalone</h3></div></div></div>
+            
+            <p>
+                The <code class="literal">sym</code> command line utility starts a standalone web server with
+                SymmetricDS pre-deployed.  The standalone server uses an embedded instance of the
+                Jetty application server to handle web requests.  The web server can be configured
+                using command line options or the web server can be configured by changing properties in the
+                <code class="code">conf/symmetric-server.properties</code> file.
+            </p>
+            <p>
+                The following example starts the SymmetricDS server on port 8080 with the startup
+                properties found in the <code class="filename">root.properties</code> file.
+            </p>
+            <pre class="programlisting">/symmetric/bin/sym --properties root.properties --port 8080 --server
+</pre>
+            <p>
+                Even though the port and properties settings can be passed in on the command line, the preferred
+                configuration approach is to put each hosted node's properties file in the <code class="code">engines</code> directory
+                and to modify port settings and enable secure mode using the <code class="code">conf/symmetric-server.properties</code>.
+            </p>
+            <p>
+                It is also suggested that SymmetricDS be configured to run as a service according to the instructions for your platform as documented in the following section.
+            </p>
+        </div>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="running-service"></a>5.3.&nbsp;Running SymmetricDS as a Service</h2></div></div></div>
+    
+    <p>
+        SymmetricDS can be configured to start automatically when the system boots, running as a Windows service or Linux/Unix daemon.
+        A wrapper process starts SymmetricDS and monitors it, so it can be restarted if it runs out of memory or exits unexpectedly.
+        The wrapper writes standard output and standard error to the <code class="filename">logs/wrapper.log</code> file.
+    </p>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="running-service-windows"></a>5.3.1.&nbsp;Running as a Windows Service</h3></div></div></div>
+        
+        <p>
+            To install the service, run the following command as Administrator:
+            </p><pre class="programlisting">bin\sym_service.bat install</pre><p>
+        </p>
+        <p>
+            Most configuration changes do not require the service to be re-installed.
+            To un-install the service, run the following command as Administrator:
+            </p><pre class="programlisting">bin\sym_service.bat uninstall</pre><p>
+        </p>
+        <p>
+            To start and stop the service manually, run the following commands as Administrator:
+            </p><pre class="programlisting">bin\sym_service.bat start
+bin\sym_service.bat stop</pre><p>
+        </p>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="running-service-unix"></a>5.3.2.&nbsp;Running as a Linux/Unix daemon</h3></div></div></div>
+        
+        <p>
+            An init script is written to the system <code class="filename">/etc/init.d</code> directory.
+            Symbolic links are created for starting on run levels 2, 3, and 5 and stopping on run levels 0, 1, and 6.
+            To install the script, running the following command as root:
+            </p><pre class="programlisting">bin/sym_service install</pre><p>
+        </p>
+        <p>
+            Most configuration changes do not require the service to be re-installed.
+            To un-install the service, run the following command as root:
+            </p><pre class="programlisting">bin/sym_service uninstall</pre><p>
+        </p>
+        <p>
+            To start and stop the service manually, run the following commands:
+            </p><pre class="programlisting">bin/sym_service start
+bin/sym_service stop</pre><p>
+        </p>
+    </div>
+    </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="clustering"></a>5.4.&nbsp;Clustering</h2></div></div></div>
+        
+        <p>
+        A single SymmetricDS node may be clustered across a series of instances, creating a web farm.  A node might be clustered to provide load balancing and failover, for example.
+        </p>
+        <p>
+        When clustered, a hardware load balancer is typically used
+        to round robin client requests to the cluster.  The load balancer should be configured for stateless connections.
+        Also, the <code class="literal">sync.url</code> (discussed in <a href="setup.html#setup-engine-files" title="2.1.&nbsp;Engine Files">Section&nbsp;2.1, &#8220;Engine Files&#8221;</a>)
+        SymmetricDS property should be set to the URL of the load balancer.
+        </p>
+        <p>
+        If the cluster will be running any of the SymmetricDS jobs, then the <code class="literal">cluster.lock.enabled</code> property should be set to <code class="literal">true</code>.
+        By setting this property to true, SymmetricDS will use a row in the <a href="data-model.html#table_lock" title="A.16.&nbsp;LOCK">LOCK</a> table as a semaphore to make sure that only one instance at a time
+        runs a job.  When a lock is acquired, a row is updated in the lock table with the time of the lock and the server id of the locking job.  The lock time is set back to null
+        when the job is finished running.  Another instance of SymmetricDS cannot aquire a lock until the locking instance (according to the server id) releases the lock.  If an
+        instance is terminated while the lock is still held, an instance with the same server id is allowed to reaquire the lock.  If the locking instance remains down, the lock can be
+        broken after a period of time, specified by the <code class="literal">cluster.lock.timeout.ms</code> property, has expired.  Note that if the job is still running and the lock
+        expires, two jobs could be running at the same time which could cause database deadlocks.
+        </p>
+        <p>
+        By default, the locking server id is the hostname of the server.  If two clustered instances are running on the same server, then the <code class="literal">cluster.server.id</code> property
+        may be set to indicate the name that the instance should use for its server id.
+        </p>
+        <p>
+        When deploying SymmetricDS to an application server like Tomcat or JBoss, no special session clustering needs to be configured for the application server.
+        </p>
+    </div>
+      <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="encrypted-passwords"></a>5.5.&nbsp;Encrypted Passwords</h2></div></div></div>
+        
+        <p>
+            The <code class="literal">db.user</code> and <code class="literal">db.password</code> properties will accept encrypted text, which protects
+            against casual observation.  The text is prefixed with <code class="literal">enc:</code> to indicate
+            that it is encrypted.  To encrypt text, use the following command:
+
+            </p><pre class="programlisting">symadmin -e {engine name} encrypt-text text-to-encrypt</pre><p>
+            or
+            </p><pre class="programlisting">symadmin -p {properties file} encrypt-text text-to-encrypt</pre><p>
+
+            The text is encrypted using a secret key named "sym.secret" that is retrieved from a keystore file.
+            By default, the keystore is located in <code class="filename">security/keystore</code>.
+            The location and filename of the keystore can be overridden by setting the "sym.keystore.file" system property.
+            If the secret key is not found, the system will generate and install a secret key for use with Triple DES cipher.
+        </p>
+        <p>
+            Generate a new secret key for encryption using the <code class="literal">keytool</code>
+            command that comes with the JRE.  If there is an existing key in the keystore, first remove it:
+
+            </p><pre class="programlisting">keytool -keystore keystore -storepass changeit -storetype jceks \
+   -alias sym.secret -delete</pre><p>
+
+            Then generate a secret key, specifying a cipher algorithm and key size.
+            Commonly used algorithms that are supported include aes, blowfish, desede, and rc4.
+
+            </p><pre class="programlisting">keytool -keystore keystore -storepass changeit -storetype jceks \
+   -alias sym.secret -genseckey -keyalg aes -keysize 128</pre><p>
+
+            If using an alternative provider, place the provider JAR file in the SymmetricDS <code class="filename">lib</code> folder.
+            The provider class name should be installed in the JRE security properties or specified on the command line.
+            To install in the JRE, edit the JRE <code class="filename">lib/security/java.security</code> file
+            and set a <code class="literal">security.provider.i</code> property for the provider class name.
+            Or, the provider can be specified on the command line instead.
+            Both <code class="literal">keytool</code> and <code class="literal">sym</code> accept command line arguments for the provider class name.
+            For example, using the Bouncy Castle provider, the command line options would look like:
+
+            </p><pre class="programlisting">keytool -keystore keystore -storepass changeit -storetype jceks \
+   -alias sym.secret -genseckey -keyalg idea -keysize 56 \
+   -providerClass org.bouncycastle.jce.provider.BouncyCastleProvider \
+   -providerPath ..\lib\bcprov-ext.jar</pre><p>
+            </p><pre class="programlisting">symadmin -providerClass org.bouncycastle.jce.provider.BouncyCastleProvider -e secret</pre><p>
+
+            To customize the encryption, write a Java class that implements the ISecurityService or extends the default SecurityService, and place
+            the class on the classpath in either <code class="filename">lib</code> or
+            <code class="filename">web/WEB-INF/lib</code> folders.
+            Then, in the <code class="filename">symmetric.properties</code> specify your class name for the security service.
+
+            </p><pre class="programlisting">security.service.class.name=org.jumpmind.security.SecurityService</pre><p>
+
+            Remember to specify your properties file when encrypting passwords, so it will use your custom ISecurityService.
+
+            </p><pre class="programlisting">symadmin -p symmetric.properties -e secret</pre><p>
+        </p>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="secure-transport"></a>5.6.&nbsp;Secure Transport</h2></div></div></div>
+        
+        <p>
+            By specifying the "https" protocol for a URL, SymmetricDS will communicate over
+            Secure Sockets Layer (SSL) for an encrypted transport.  The following properties
+            need to be set with "https" in the URL:
+            </p><div class="variablelist"><dl><dt><span class="term">
+                        <span><strong class="command">sync.url</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            This is the URL of the current node, so if you want to force other
+                            nodes to communicate over SSL with this node, you specify "https" in the URL.
+                        </p>
+                    </dd><dt><span class="term">
+                        <span><strong class="command">registration.url</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            This is the URL where the node will connect for registration when it
+                            first starts up.  To protect the registration with SSL, you specify
+                            "https" in the URL.
+                        </p>
+                    </dd></dl></div><p>
+            For incoming HTTPS connections, SymmetricDS depends on the webserver where
+            it is deployed, so the webserver must be configured for HTTPS.
+            As a standalone deployment, the "sym" launcher command provides options for
+            enabling HTTPS support.
+        </p>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="secure-transport-sym"></a>5.6.1.&nbsp;Sym Launcher</h3></div></div></div>
+            
+            <p>
+                The "sym" launch command uses Jetty as an embedded web server.
+                Using command line options, the web server can be told to listen for
+                HTTP, HTTPS, or both.
+            </p>
+            <p>
+                <span><strong class="command">sym --port 8080 --server</strong></span>
+            </p>
+            <p>
+                <span><strong class="command">sym --secure-port 8443 --secure-server</strong></span>
+            </p>
+            <p>
+                <span><strong class="command">sym --port 8080 --secure-port 8443 --mixed-server</strong></span>
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="secure-transport-tomcat"></a>5.6.2.&nbsp;Tomcat</h3></div></div></div>
+            
+            <p>
+                If you deploy SymmetricDS to Apache Tomcat, it can be secured by editing the
+                <code class="filename">TOMCAT_HOME/conf/server.xml</code>
+                configuration file.  There is already a line that can be uncommented
+                and changed to the following:
+
+                </p><pre class="programlisting">
+&lt;Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+  maxThreads="150" scheme="https" secure="true"
+  clientAuth="false" sslProtocol="TLS"
+  keystoreFile="/symmetric-ds-1.x.x/security/keystore" /&gt;</pre><p>
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="secure-transport-keystore"></a>5.6.3.&nbsp;Keystores</h3></div></div></div>
+            
+            <p>
+                When SymmetricDS connects to a URL with HTTPS, Java checks the validity of the
+                certificate using the built-in trusted keystore located at
+                <code class="filename">JRE_HOME/lib/security/cacerts</code>.
+                The "sym" launcher command overrides the trusted keystore to use its own
+                trusted keystore instead, which is located at
+                <code class="filename">security/cacerts</code>.
+                This keystore contains the certificate aliased as "sym" for use in testing
+                and easing deployments.
+                The trusted keystore can be overridden
+                by specifying the <code class="literal">javax.net.ssl.trustStore</code> system property.
+            </p>
+            <p>
+                When SymmetricDS is run as a secure server with the "sym" launcher,
+                it accepts incoming requests using the key installed in the keystore
+                located at
+                <code class="filename">security/keystore</code>.
+                The default key is provided for convenience of testing, but should be
+                re-generated for security.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="secure-transport-keys"></a>5.6.4.&nbsp;Generating Keys</h3></div></div></div>
+            
+            <p>
+                To generate new keys and install a server certificate, use the
+                following steps:
+            </p>
+            <div class="procedure"><ol type="1"><li>
+                    <p>
+                        Open a command prompt and navigate to the
+                        <code class="filename">security</code>
+                        subdirectory of your SymmetricDS installation on the server to which
+                        communication will be secured (typically the "root" or "central office" server).
+                    </p>
+                </li><li>
+                    <p>Delete the old key pair and certificate.</p>
+                    <p>
+                        <span><strong class="command">keytool -keystore keystore -delete -alias sym</strong></span>
+                    </p>
+                    <p>
+                        <span><strong class="command">keytool -keystore cacerts -delete -alias sym</strong></span>
+                    </p>
+                    <pre class="programlisting">Enter keystore password:  changeit</pre>
+                </li><li>
+                    <p>Generate a new key pair.  Note that the first name/last name (the "CN") must match
+                    the fully qualified hostname the client will be using to communcate to the server.</p>
+                    <p>
+                        <span><strong class="command">keytool -keystore keystore -alias sym -genkey -keyalg RSA -validity 10950</strong></span>
+                    </p>
+                    <pre class="programlisting">
+Enter keystore password:  changeit
+What is your first and last name?
+  [Unknown]:  localhost
+What is the name of your organizational unit?
+  [Unknown]:  SymmetricDS
+What is the name of your organization?
+  [Unknown]:  JumpMind
+What is the name of your City or Locality?
+  [Unknown]:
+What is the name of your State or Province?
+  [Unknown]:
+What is the two-letter country code for this unit?
+  [Unknown]:
+Is CN=localhost, OU=SymmetricDS, O=JumpMind, L=Unknown, ST=Unknown, C=Unknown
+correct?
+  [no]:  yes
+
+Enter key password for &lt;sym&gt;
+        (RETURN if same as keystore password):</pre>
+                </li><li>
+                    <p>Export the certificate from the private keystore.</p>
+                    <p>
+                        <span><strong class="command">keytool -keystore keystore -export -alias sym -rfc -file sym.cer</strong></span>
+                    </p>
+                </li><li>
+                    <p>Install the certificate in the trusted keystore.</p>
+                    <p>
+                        <span><strong class="command">keytool -keystore cacerts -import -alias sym -file sym.cer</strong></span>
+                    </p>
+                </li><li>
+                    <p>Copy the cacerts file that is generated by this process to
+                    the <code class="filename">security</code> directory of each client's SymmetricDS installation.</p>
+                </li></ol></div>
+        </div>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="basic-auth"></a>5.7.&nbsp;Basic Authentication</h2></div></div></div>
+        
+        <p>
+            SymmetricDS supports basic authentication for client and server nodes.
+        </p>
+        <p>
+            To configure a client node to use basic authentication when communicating with a server node,
+            specify the following startup parameters:
+        </p>
+            <div class="variablelist"><dl><dt><span class="term">
+                        <span><strong class="command">http.basic.auth.username</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            username for client node basic authentication.
+                            [&nbsp;Default:&nbsp;]
+                        </p>
+                    </dd><dt><span class="term">
+                        <span><strong class="command">http.basic.auth.password</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            password for client node basic authentication.
+                            [&nbsp;Default:&nbsp;]
+                        </p>
+                    </dd></dl></div>
+        <p>
+            The SymmetricDS Standalone Web Server also supports Basic Authentication.  It can be enabled by
+            passing the following arguments to the startup program
+        </p>
+            <div class="variablelist"><dl><dt><span class="term">
+                        <span><strong class="command">--http-basic-auth-user</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            username for basic authentication
+                            [&nbsp;Default:&nbsp;]
+                        </p>
+                    </dd><dt><span class="term">
+                        <span><strong class="command">--http-basic-auth-password</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            password for basic authentication
+                            [&nbsp;Default:&nbsp;]
+                        </p>
+                    </dd></dl></div>
+        <p>
+            If the server node is deployed to Tomcat or another application server as a WAR or EAR file, then
+            basic authentication is setup with the standard configuration in the WEB.xml file.
+        </p>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="dataloaders"></a>5.8.&nbsp;Data Loaders</h2></div></div></div>
+        
+        <p>
+        SymmetricDS supports the concept of pluggable data loaders.  A data loader defines how data is loaded into a target
+        datasource.  The default data loader for SymmetricDS loads data to the relational database that is represented by the SymmetricDS node.  
+        Data loaders do not always have to load into the target relational database.  They can write to
+        a file, a web service, or any other type of non-relational data source.  Data loaders can also use other techniques to increase performance
+        of data loads into the target relation database.  Data loaders are pluggable at the 
+        <a href="data-model.html#table_channel" title="A.1.&nbsp;CHANNEL">CHANNEL</a> level.  They are configured by setting the <code class="literal">data_loader_type</code> on
+        the channel table.
+        </p>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="mysqlbulk"></a>5.8.1.&nbsp;Bulk Data Loaders</h3></div></div></div>
+            
+            <p>
+            To use the preconfigured bulk data loaders,
+             you set the <code class="literal">data_loader_type</code> on a channel to one of the following:  
+           </p><div class="itemizedlist"><ul type="disc"><li>mysql_bulk</li><li>mssql_bulk</li><li>postgres_bulk</li><li>oracle_bulk</li></ul></div><p>
+             Tables that should be data loaded should be configured to use this channel.  Many times, a reload channel will
+             be set to bulk load to increase the performance of an initial load.  
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="mongodb"></a>5.8.2.&nbsp;MongoDB</h3></div></div></div>
+            
+            <p>
+            The MongoDB data loader maps relational database rows to MongoDB documents in collections.  To use the preconfigured MongoDB data loader,
+             you set the <code class="literal">data_loader_type</code> to <span class="emphasis"><em>MongoDB</em></span> on a channel.  
+             Tables that should be synchronized to MongoDB should be configured to use this channel.  
+             In order to point it to a MongoDB instance
+             set the following properties in the engines properties file.
+          </p><pre class="programlisting">
+mongodb.username=xxxx
+mongodb.password=xxxx
+mongodb.host=xxxx
+mongodb.port=xxxx
+mongodb.default.databasename=default
+          </pre><p>
+            </p>
+            <p>
+            By default, the catalog or schema passed by SymmetricDS will be used for the MongoDB database name. The table passed by SymmetricDS 
+            will be used as the MongoDB collection name.  If the catalog or schema are not set, the default database name property is used as the 
+            database name. 
+            </p>
+            <p>
+            The _id of the MongoDB document will be the primary key of the database record. If the table has a composite primary key, then the 
+            _id will be an embedded document that has name value pairs of the composite key. The body of the document will be name value pairs 
+            of the table column name and table row value.
+            </p>
+            <p>
+            SymmetricDS uses the MongoDB Java Driver to upsert documents.
+            </p>
+            <p>
+            SymmetricDS transforms can be used to transform the data.  If a complex mapping is required that is not supported by transforms, then
+            the <code class="literal">IDBObjectMapper</code> can be implemented and a new <code class="literal">MongoDataLoaderFactory</code> can be wired up
+            as an extension point.
+            </p>
+        </div>
+    </div>
+    
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="admin-jmx"></a>5.9.&nbsp;Java Management Extensions</h2></div></div></div>
+        
+        <p>
+          Monitoring and administrative operations can be performed using Java Management Extensions (JMX).
+          SymmetricDS uses MX4J to expose JMX attributes and operations that can be accessed
+          from the built-in web console, Java's jconsole, or an application server.
+          By default, the web management console can be opened from the following address:
+
+          </p><pre class="programlisting">http://localhost:31416/</pre><p>
+
+          In order to use jconsole, you must enable JMX remote management in the JVM. You can edit the startup scripts to set the following system
+          parameters.
+
+          </p><pre class="programlisting">
+          -Dcom.sun.management.jmxremote.port=31417
+          -Dcom.sun.management.jmxremote.authenticate=false
+          -Dcom.sun.management.jmxremote.ssl=false
+          </pre><p>
+
+          More details about enabling JMX for JConsole can be found <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html" target="_top">here</a>.
+          </p>
+          <p>
+          Using the Java jconsole command, SymmetricDS is listed as a local process named SymmetricLauncher.
+          In jconsole, SymmetricDS appears under the MBeans tab under the name defined by the <code class="literal">engine.name</code>
+          property.  The default value is SymmetricDS.
+        </p>
+        <p>
+          The management interfaces under SymmetricDS are organized as follows:
+
+            </p><div class="itemizedlist"><ul type="disc"><li>
+                    <p>Node - administrative operations </p>
+                </li><li>
+                    <p>Parameters - access to properties set through the parameter service </p>
+                </li></ul></div><p>
+
+        </p>
+    </div>
+<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jms-publishing"></a>5.10.&nbsp;JMS Publishing</h2></div></div></div>
+        
+        <p>
+            With the proper configuration SymmetricDS can publish XML messages of captured data changes to
+            JMS during routing or transactionally while data loading synchronized data into a target database.
+            The following explains how to publish to JMS during synchronization to the target database.
+       </p>
+       <p>
+            The XmlPublisherDatabaseWriterFilter is a
+            <a href="developer.html#extensions-data-loader-filter" title="6.1.2.&nbsp;IDatabaseWriterFilter">IDatabaseWriterFilter</a> that may be configured to
+            publish specific tables as an XML message to a JMS provider.
+            See <a href="developer.html#extensions" title="6.1.&nbsp;Extension Points">Section&nbsp;6.1, &#8220;Extension Points&#8221;</a> for information on how
+            to configure an extension point.  If the publish to JMS fails, the batch will be marked in error,
+            the loaded data for the batch will be rolled back
+            and the batch will be retried during the next synchronization run.
+        </p>
+        <p>
+        The following is an example extension point configuration that will publish four tables in XML with a root
+        tag of <span class="emphasis"><em>'sale'</em></span>.  Each XML message will be grouped by the batch and the column names identified by
+        the groupByColumnNames property which have the same values.
+                </p><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd"&gt;
+
+    &lt;bean id="configuration-publishingFilter"
+      class="org.jumpmind.symmetric.integrate.XmlPublisherDatabaseWriterFilter"&gt;
+        &lt;property name="xmlTagNameToUseForGroup" value="sale"/&gt;
+        &lt;property name="tableNamesToPublishAsGroup"&gt;
+            &lt;list&gt;
+               &lt;value&gt;SALE_TX&lt;/value&gt;
+               &lt;value&gt;SALE_LINE_ITEM&lt;/value&gt;
+               &lt;value&gt;SALE_TAX&lt;/value&gt;
+               &lt;value&gt;SALE_TOTAL&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+        &lt;property name="groupByColumnNames"&gt;
+            &lt;list&gt;
+               &lt;value&gt;STORE_ID&lt;/value&gt;
+               &lt;value&gt;BUSINESS_DAY&lt;/value&gt;
+               &lt;value&gt;WORKSTATION_ID&lt;/value&gt;
+               &lt;value&gt;TRANSACTION_ID&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+        &lt;property name="publisher"&gt;
+           &lt;bean class="org.jumpmind.symmetric.integrate.SimpleJmsPublisher"&gt;
+               &lt;property name="jmsTemplate" ref="definedSpringJmsTemplate"/&gt;
+           &lt;/bean&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</pre><p>
+        </p>
+        <p>
+          The publisher property on the XmlPublisherDatabaseWriterFilter takes an interface of type IPublisher.  The implementation
+          demonstrated here is an implementation that publishes to JMS using Spring's
+          <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/jms.html#jms-jmstemplate" target="_top">JMS template</a>.
+          Other implementations of IPublisher could easily publish the XML to other targets like an HTTP server, the file system or secure copy it to another server.
+        </p>
+        <p>
+          The above configuration will publish XML similar to the following:
+            </p><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;sale xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  id="0012010-01-220031234" nodeid="00001" time="1264187704155"&gt;
+  &lt;row entity="SALE_TX" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="CASHIER_ID"&gt;010110&lt;/data&gt;
+  &lt;/row&gt;
+  &lt;row entity="SALE_LINE_ITEM" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="SKU"&gt;9999999&lt;/data&gt;
+    &lt;data key="PRICE"&gt;10.00&lt;/data&gt;
+    &lt;data key="DESC" xsi:nil="true"/&gt;
+  &lt;/row&gt;
+  &lt;row entity="SALE_LINE_ITEM" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="SKU"&gt;9999999&lt;/data&gt;
+    &lt;data key="PRICE"&gt;10.00&lt;/data&gt;
+    &lt;data key="DESC" xsi:nil="true"/&gt;
+  &lt;/row&gt;
+  &lt;row entity="SALE_TAX" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="AMOUNT"&gt;1.33&lt;/data&gt;
+  &lt;/row&gt;
+  &lt;row entity="SALE_TOTAL" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="AMOUNT"&gt;21.33&lt;/data&gt;
+  &lt;/row&gt;
+&lt;/sale&gt;
+            </pre><p>
+            To publish JMS messages during routing
+            the same pattern is valid, with the exception that the extension point would be the XmlPublisherDataRouter and the router
+            would be configured by setting the <code class="literal">router_type</code> of a <a href="data-model.html#table_router" title="A.33.&nbsp;ROUTER">ROUTER</a> to the Spring bean
+            name of the registered extension point.  Of course, the router would need to be linked through <a href="data-model.html#table_trigger_router" title="A.40.&nbsp;TRIGGER_ROUTER">TRIGGER_ROUTER</a>s
+            to each <a href="data-model.html#table_trigger" title="A.38.&nbsp;TRIGGER">TRIGGER</a>  table that needs published.
+        </p>
+    </div>    
+</div><div xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="30%" align="left"><a accesskey="p" href="manage.html">Prev</a>&nbsp;</td><td width="40%" align="center"><a accesskey="h" href="user-guide.html">Home</a></td><td width="30%" align="right">&nbsp;<a accesskey="n" href="developer.html">Next</a></td></tr><tr><td width="30%" align="left" valign="top">Chapter&nbsp;4.&nbsp;Manage&nbsp;</td><td width="40%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.symmetricds.org/" title="SymmetricDS">SymmetricDS
+                                        </a></span></td><td width="30%" align="right" valign="top">&nbsp;Chapter&nbsp;6.&nbsp;Developer</td></tr></table></div></body></html>

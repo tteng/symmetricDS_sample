@@ -1,0 +1,473 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;6.&nbsp;Developer</title><link rel="stylesheet" href="css/docbook-style.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.72.0"><link rel="start" href="user-guide.html" title="SymmetricDS User Guide"><link rel="up" href="user-guide.html" title="SymmetricDS User Guide"><link rel="prev" href="advanced.html" title="Chapter&nbsp;5.&nbsp;Advanced Topics"><link rel="next" href="data-model.html" title="Appendix&nbsp;A.&nbsp;Data Model"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns:fo="http://www.w3.org/1999/XSL/Format" id="banner"><a style="border:none;" href="http://www.symmetricds.org/" title="SymmetricDS User Guide"><img style="border:none;" alt="SymmetricDS" src="images/banner-logo.gif"></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="developer"></a>Chapter&nbsp;6.&nbsp;Developer</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="developer.html#extensions">6.1. Extension Points</a></span></dt><dd><dl><dt><span class="section"><a href="developer.html#extensions-parameter-filter">6.1.1. IParameterFilter</a></span></dt><dt><span class="section"><a href="developer.html#extensions-data-loader-filter">6.1.2. IDatabaseWriterFilter</a></span></dt><dt><span class="section"><a href="developer.html#extensions-databasewriter-errorhandler">6.1.3. IDatabaseWriterErrorHandler</a></span></dt><dt><span class="section"><a href="developer.html#extensions-dataloader-factory">6.1.4. IDataLoaderFactory</a></span></dt><dt><span class="section"><a href="developer.html#extensions-acknowledge-event-listener">6.1.5. IAcknowledgeEventListener</a></span></dt><dt><span class="section"><a href="developer.html#extensions-reload-listener">6.1.6. IReloadListener</a></span></dt><dt><span class="section"><a href="developer.html#extensions-sync-url-extension">6.1.7. ISyncUrlExtension</a></span></dt><dt><span class="section"><a href="developer.html#extensions-column-transforms">6.1.8. IColumnTransform</a></span></dt><dt><span class="section"><a href="developer.html#extensions-node-id-generator">6.1.9. INodeIdCreator</a></span></dt><dt><span class="section"><a href="developer.html#extensions-trigger-creation-listener">6.1.10. ITriggerCreationListener</a></span></dt><dt><span class="section"><a href="developer.html#extensions-batch-algorithm">6.1.11. IBatchAlgorithm</a></span></dt><dt><span class="section"><a href="developer.html#extensions-data-router">6.1.12. IDataRouter</a></span></dt><dt><span class="section"><a href="developer.html#extensions-heartbeat-listener">6.1.13. IHeartbeatListener</a></span></dt><dt><span class="section"><a href="developer.html#extensions-offline-client-listener">6.1.14. IOfflineClientListener</a></span></dt><dt><span class="section"><a href="developer.html#extensions-offline-server-listener">6.1.15. IOfflineServerListener</a></span></dt><dt><span class="section"><a href="developer.html#extensions-node-password">6.1.16. INodePasswordFilter</a></span></dt></dl></dd><dt><span class="section"><a href="developer.html#android">6.2. Embedding in Android</a></span></dt></dl></div>
+    
+    <p>
+       This chapter focuses on a variety of ways for developers to build upon and extend some of the existing features found within SymmetricDS.
+    </p>
+
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="extensions"></a>6.1.&nbsp;Extension Points</h2></div></div></div>
+    
+        <p>
+             SymmetricDS has a pluggable architecture that can be extended. A Java class that implements
+             the appropriate extension point interface, can implement custom logic and change the behavior
+             of SymmetricDS to suit special needs.  All supported extension
+             points extend the <code class="literal">IExtensionPoint</code> interface.  The available extension points are documented in the following sections.
+        </p>
+        <p>
+             When SymmetricDS starts up, the <code class="literal">ExtensionPointManager</code> searches a <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://springframework.org" target="_top">Spring Framework</a>
+             context for classes that implement the <code class="literal">IExtensionPoint</code> interface, then creates and registers
+             the class with the appropriate SymmetricDS component.
+        </p>
+        <p>
+             Extensions should be configured in the <code class="literal">conf/symmetric-extensions.xml</code> file as Spring beans.  The jar file that contains
+             the extension should be placed in the web/WEB-INF/lib directory.
+        </p>        
+        <p>
+             If an extension point needs access to SymmetricDS services or needs to connect to the database
+             it may implement the <code class="literal">ISymmetricEngineAware</code> interface in order to
+             get a handle to the <code class="literal">ISymmetricEngine</code>.
+        </p>
+        <p>
+             The <code class="literal">INodeGroupExtensionPoint</code> interface may be optionally implemented to indicate that a registered
+             extension point should only be registered with specific node groups.
+             </p><pre class="programlisting">/**
+ * Only apply this extension point to the 'root' node group.
+ */
+ public String[] getNodeGroupIdsToApplyTo() {
+     return new String[] { "root" };
+ }
+</pre><p>
+        </p>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-parameter-filter"></a>6.1.1.&nbsp;IParameterFilter</h3></div></div></div>
+            
+            <p>
+                Parameter values can be specified in code using a parameter filter.  Note that there can be only one parameter
+                filter per engine instance.  The IParameterFilter replaces the deprecated IRuntimeConfig from prior releases.
+                </p><pre class="programlisting">public class MyParameterFilter
+    implements IParameterFilter, INodeGroupExtensionPoint {
+
+    /**
+     * Only apply this filter to stores
+     */
+    public String[] getNodeGroupIdsToApplyTo() {
+        return new String[] { "store" };
+    }
+
+    public String filterParameter(String key, String value) {
+        // look up a store number from an already existing properties file.
+        if (key.equals(ParameterConstants.EXTERNAL_ID)) {
+            return StoreProperties.getStoreProperties().
+              getProperty(StoreProperties.STORE_NUMBER);
+        }
+        return value;
+    }
+
+    public boolean isAutoRegister() {
+        return true;
+    }
+
+}</pre><p>
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-data-loader-filter"></a>6.1.2.&nbsp;IDatabaseWriterFilter</h3></div></div></div>
+            
+            <p>
+                Data can be filtered or manipulated before it is loaded into the target database.
+                A filter can change the
+                data in a column, save it somewhere else or do something else with the data entirely.
+                It can also specify by the
+                return value of the function call that the data loader should continue on
+                and load the data (by returning true) or ignore it (by returning false). One
+                possible use of the filter, for example, might be to
+                route credit card data to a secure database and blank it out as it loads
+                into a less-restricted reporting database.
+            </p>
+            <p>
+                A <code class="literal">DataContext</code> is passed to each of the callback methods.  A new
+                context is created for each synchronization.  The context provides a mechanism
+                to share data during the load of a batch between different rows of data that are
+                committed in a single database transaction.
+            </p>
+            <p>
+                The filter also provides callback methods for the batch lifecycle.  The <code class="literal">DatabaseWriterFilterAdapter</code>
+                may be used if not all methods are required.
+            </p>
+            <p>
+                A class implementing the IDatabaseWriterFilter interface is injected onto the
+                DataLoaderService in order to receive callbacks when data is inserted,
+                updated, or deleted.
+
+                </p><pre class="programlisting">public class MyFilter extends DatabaseWriterFilterAdapter {
+
+    @Override
+    public boolean beforeWrite(DataContext context, Table table, CsvData data) {
+        if (table.getName().equalsIgnoreCase("CREDIT_CARD_TENDER")
+                &amp;&amp; data.getDataEventType().equals(DataEventType.INSERT)) {
+            String[] parsedData = data.getParsedData(CsvData.ROW_DATA);
+            // blank out credit card number
+            parsedData[table.getColumnIndex("CREDIT_CARD_NUMBER")] = null;
+        }
+        return true;
+    }
+}</pre><p>
+            </p>
+            <p>
+                The filter class should be specified in <code class="literal">conf/symmetric-extensions.xml</code> as follows.
+
+                </p><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd"&gt;
+
+    &lt;bean id="myFilter" class="com.mydomain.MyFilter"/&gt;
+
+&lt;/beans&gt;</pre><p>
+            </p>
+        </div>
+
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-databasewriter-errorhandler"></a>6.1.3.&nbsp;IDatabaseWriterErrorHandler</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to override how errors are handled.  You can use this extension point to ignore rows that produce foreign key errors.
+            </p>
+        </div>
+
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-dataloader-factory"></a>6.1.4.&nbsp;IDataLoaderFactory</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to provide a different implementation of the <code class="code">org.jumpmind.symmetric.io.data.IDataWriter</code> that
+            is used by the SymmetricDS data loader.  Data loaders are configured for a channel.  After this extension point is registered it can
+            be activated for a <a href="data-model.html#table_channel" title="A.1.&nbsp;CHANNEL">CHANNEL</a> by indicating the data loader name in the <code class="code">data_loader_type</code> column.
+            </p>
+            <p>
+            SymmetricDS has two out of the box extensions of IDataLoaderFactory already implemented in its PostgresBulkDataLoaderFactory 
+            and OracleBulkDataLoaderFactory classes.  These extension points implement bulk data loading capabilities for Oracle, 
+            Postgres and Greenplum dialects.  See Appendix C. Database Notes for details.
+            </p>
+            <p>
+            Another possible use of this extension point is to route data to a NOSQL data sink.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-acknowledge-event-listener"></a>6.1.5.&nbsp;IAcknowledgeEventListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to receive callback events when a batch is acknowledged.
+            The callback for this listener happens at the point of extraction.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-reload-listener"></a>6.1.6.&nbsp;IReloadListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to listen in and take
+            action before or after a reload is requested for a Node.  The callback for this listener
+            happens at the point of extraction.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-sync-url-extension"></a>6.1.7.&nbsp;ISyncUrlExtension</h3></div></div></div>
+            
+            <p>
+             This extension point is used to select an appropriate URL based on
+             the URI provided in the <code class="literal">sync_url</code> column of <code class="literal">sym_node</code>.
+            </p>
+            <p>
+             To use this extension point configure the sync_url for a node with the
+             protocol of ext://beanName. The beanName is the name you give the extension
+             point in the extension xml file.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-column-transforms"></a>6.1.8.&nbsp;IColumnTransform</h3></div></div></div>
+            
+            <p>
+             This extension point allows custom column transformations to be created.  There are a handful of
+             out-of-the-box implementations.  If any of these do not meet the column transformation needs of
+             the application, then a custom transform can be created and registered.  It can be activated
+             by referencing the column transform's name <code class="code">transform_type</code> column of
+             <a href="data-model.html#table_transform_column" title="A.37.&nbsp;TRANSFORM_COLUMN">TRANSFORM_COLUMN</a>
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-node-id-generator"></a>6.1.9.&nbsp;INodeIdCreator</h3></div></div></div>
+            
+            <p>
+             This extension point allows SymmetricDS users to implement their own algorithms for how
+             node ids and passwords are generated or selected during the registration process.  There may be
+             only one node creator per SymmetricDS instance (Please note that the node creator extension has replaced the node generator extension).
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-trigger-creation-listener"></a>6.1.10.&nbsp;ITriggerCreationListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to get status callbacks during trigger creation.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-batch-algorithm"></a>6.1.11.&nbsp;IBatchAlgorithm</h3></div></div></div>
+            
+            <p>
+            Implement this extension point and set the name of the Spring bean on the batch_algorithm column of the Channel table to use.
+            This extension point gives fine grained control over how a channel is batched.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-data-router"></a>6.1.12.&nbsp;IDataRouter</h3></div></div></div>
+            
+            <p>
+            Implement this extension point and set the name of the Spring bean on the router_type column
+            of the Router table to use.  This extension point gives the ability to programmatically decide
+            which nodes data should be routed to.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-heartbeat-listener"></a>6.1.13.&nbsp;IHeartbeatListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to get callbacks during the heartbeat job.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-offline-client-listener"></a>6.1.14.&nbsp;IOfflineClientListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to get callbacks for offline events on client nodes.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-offline-server-listener"></a>6.1.15.&nbsp;IOfflineServerListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to get callbacks for offline events detected on a server node during monitoring of client nodes.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-node-password"></a>6.1.16.&nbsp;INodePasswordFilter</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to intercept the saving and rendering of the node password.
+            </p>
+        </div>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="android"></a>6.2.&nbsp;Embedding in Android</h2></div></div></div>
+	
+
+	<p>
+		SymmetricDS now has its web-enabled, fault-tolerant, database
+		synchronization software available on the Android mobile computing
+		platform. The Android client follows all of the same concepts and
+		brings to Android all of the same core SymmetricDS features as the
+		full-featured, Java-based SymmetricDS client. The Android client is a
+		little bit different in that it is not a stand-alone application, but
+		is designed to be referenced as a library to run in-process with an
+		Android	application	requiring synchronization for its SQLite database.
+	</p>
+	<p>
+		By using SymmetricDS, mobile application development is
+		simplified, in that the mobile application developer can now focus
+		solely on interacting with their local SQLite database. SymmetricDS
+		takes care of capturing and moving data changes to and from a
+		centralized database when the network is available
+	</p>
+	<p>
+        The same core libraries that are used for the SymmetricDS server are 
+        also used for Android.  SymmetricDS's overall footprint is
+		reduced by eliminating a number of external dependencies in order to
+		fit better on an Android device. The database access layer is
+		abstracted so that the Android specific database access layer could be
+		used. This allows SymmetricDS to be efficient in accessing the SQLite
+		database on the Android device.
+	</p>
+	<p>
+		In order to convey how to use the SymmetricDS Android libraries,
+		the example below will show how to integrate SymmetricDS into the NotePad
+		sample application that comes with the Android ADK.
+	</p>
+	<p>
+		The NotePad sample application is a very simple task list
+		application	that persists <span class="emphasis"><em>notes</em></span> to a SQLite database table called
+		Notes.  Eclipse 3.7.2 and Android ADK 20.0.3 were used for this
+        example.
+	</p>
+	<p>
+		Create the NotePad project. You do
+		this by adding a new Android Sample Project. Select the NotePad
+		project.
+	</p>
+	<p>
+		</p><div class="figure"><a name="New Sample NotePad Project"></a><div class="figure-contents">
+			
+			<div class="mediaobject"><img src="./images/sync-android-1.png" alt="New Sample NotePad Project"></div>
+		</div><p class="title"><b>Figure&nbsp;6.1.&nbsp;New Sample NotePad Project</b></p></div><p><br class="figure-break">
+	</p>
+	<p>
+		SymmetricDS for Android comes as a zip file of Java archives (jar
+		files) that are required by the SymmetricDS client at runtime. This
+		zip file ()symmetric-ds-3.4.7-android.zip) can be downloaded from 
+		the SymmetricDS.org website.  The first step to using SymmetricDS in an Android
+		application is to unzip the jar files into a location where the
+		project will recognize them. The latest Android SDK and the Eclipse
+		ADK requires that these jar files be put into a <span class="emphasis"><em>libs</em></span> directory under
+		the Android application project.
+	</p>
+	<p>
+		</p><div class="figure"><a name="Sample NotePad Project"></a><div class="figure-contents">
+			
+			<div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="855"><tr><td align="center"><img src="./images/sync-android-2.png" align="middle" width="855" alt="New Sample NotePad Project"></td></tr></table></div>
+		</div><p class="title"><b>Figure&nbsp;6.2.&nbsp;New Sample NotePad Project</b></p></div><p><br class="figure-break">
+	</p>
+	<p>
+		Unzip the symmetric-ds-x.x.x-android.zip file to the NotePad
+		project directory. Refresh the NotePad project in Eclipse. You should
+		end up with a libs directory that is automatically added to the Android
+		Dependencies.
+	</p>
+	<p>
+		</p><div class="figure"><a name="Jar Files Added to Libs"></a><div class="figure-contents">
+			
+			<div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="855"><tr><td align="center"><img src="./images/sync-android-3.png" align="middle" width="855" alt="Jar Files Added to Libs"></td></tr></table></div>
+		</div><p class="title"><b>Figure&nbsp;6.3.&nbsp;Jar Files Added to Libs</b></p></div><p><br class="figure-break">
+	</p>
+	<p>
+		The Android version of the SymmetricDS engine is a Java class that can
+		be
+		instantiated directly or wired into an application via a provided
+		Android service. Whether you are using the service or the engine
+		directly you need to provide a few required startup parameters to the
+		engine:
+		</p><div class="itemizedlist"><ul type="disc"><li><span><strong class="command">SQLiteOpenHelper</strong></span>  It is best (but not required) if the
+				SQLiteOpenHelper is shared with the application that will be sharing
+				the SQLite database. This core Android Java class provides software
+				synchronization around the access to the database and minimizes
+				locking errors.
+			</li><li><span><strong class="command">registrationUrl</strong></span>  This is the URL of where the centralized
+				SymmetricDS instance is hosted.
+			</li><li><span><strong class="command">externalId</strong></span>  This is the identifier that can be used by the
+				centralized SymmetricDS server to identify whether this instance
+				should get data changes that happen on the server. It could be the
+				serial number of the device, an account username, or some other
+				business concept like store number.
+			</li><li><span><strong class="command">nodeGroupId</strong></span>  This is the group id for the mobile device in
+				the synchronization configuration. For example, if the nodeGroupId
+				is 'handheld', then the SymmetricDS configuration might have a group
+				called 'handheld' and a group called 'corp' where 'handheld' is
+				configured to push and pull data from 'corp.'
+			</li><li><span><strong class="command">properties</strong></span>  Optionally tweak the settings for SymmetricDS.
+			</li></ul></div><p>
+	</p>
+	<p>
+		In order to integrate SymmetricDS into the NotePad application,
+		the	Android-specific SymmetricService will be used, and we need to tell
+		the Android application this by adding the service to the AndroidManifest.xml file. Add the following snipped to the Manifest as
+		the last entry under the &lt;application&gt;
+		tag.
+	</p>
+	<p>
+		</p><pre class="programlisting">
+&lt;service android:name="org.jumpmind.symmetric.android.SymmetricService" 
+android:enabled="true" &gt;           
+    &lt;intent-filter&gt;
+  		&lt;action android:name="org.jumpmind.symmetric.android.
+  		SymmetricService" /&gt;
+  	&lt;/intent-filter&gt;
+&lt;/service&gt;
+		</pre><p>
+	</p>
+
+	<p>
+		The other change required in the Manifest is to give the application
+		permission to use the Internet. Add this as the first entry in the
+		AndroidManifest.xml right before the
+		&lt;application&gt; tag.
+	</p>
+
+	<p>
+		</p><pre class="programlisting">
+&lt;uses-permission android:name="android.permission.INTERNET"&gt;&lt;/uses-permission&gt; 
+		</pre><p>
+	</p>
+
+	<p>
+		The only additional change needed is the call to start the service in the
+		application. The service needs to be started manually because we need
+		to give the application a chance to provide configuration information
+		to the service.
+	</p>
+
+	<p>
+		In NotePadProvider.java add the following code snippet in the onCreate
+		method.
+	</p>
+
+	<p>
+		</p><div class="figure"><a name="NotePadProvider.java"></a><div class="figure-contents">
+			
+			<div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="855"><tr><td align="center"><img src="./images/sync-android-4.png" align="middle" width="855" alt="NotePadProvider.java"></td></tr></table></div>
+		</div><p class="title"><b>Figure&nbsp;6.4.&nbsp;NotePadProvider.java</b></p></div><p><br class="figure-break">
+	</p>
+
+	<p>
+		</p><pre class="programlisting">
+		
+final String HELPER_KEY = "NotePadHelperKey";
+
+// Register the database helper, so it can be shared with the SymmetricService
+SQLiteOpenHelperRegistry.register(HELPER_KEY, mOpenHelper);
+
+Intent intent = new Intent(getContext(), SymmetricService.class);
+
+// Notify the service of the database helper key
+intent.putExtra(SymmetricService.INTENTKEY_SQLITEOPENHELPER_REGISTRY_KEY,
+HELPER_KEY);
+intent.putExtra(SymmetricService.INTENTKEY_REGISTRATION_URL,
+"http://10.0.2.2:31415/sync/server");
+intent.putExtra(SymmetricService.INTENTKEY_EXTERNAL_ID,
+"android-simulator");
+intent.putExtra(SymmetricService.INTENTKEY_NODE_GROUP_ID, "client");
+intent.putExtra(SymmetricService.INTENTKEY_START_IN_BACKGROUND,
+true);
+
+Properties properties = new Properties();
+// initial load existing notes from the Client to the Server
+properties.setProperty(ParameterConstants.AUTO_RELOAD_REVERSE_ENABLED,
+"true");
+intent.putExtra(SymmetricService.INTENTKEY_PROPERTIES, properties);
+
+getContext().startService(intent);
+			
+		</pre><p>
+	</p>
+
+	<p>
+		This code snippet shows how the SQLiteOpenHelper is shared. The
+		application's SQLiteOpenHelper is registered in a static registry
+		provided by the SymmetricDS Android library. When the service is
+		started, the key used to store the helper is passed to the service so
+		that the service may pull the helper back out of the registry.
+	</p>
+
+	<p>
+		The various parameters needed by SymmetricDS are being set in the Intent
+		which will be used by the SymmetricService to start the engine.
+	</p>
+
+	<p>
+		Most of the parameters will be familiar to SymmetricDS users. In this case
+		a property is being set which will force an initial load of the
+		existing Notes from the client to the server. This allows the user of
+		the application to enter Notes for the first time offline or while the
+		SymmetricDS engine is unregistered and still have them arrive at the
+		centralized server once the SymmetricDS engine does get registered.
+	</p>
+
+	<p>
+	    Next, set up an Android Emulator.  This can be done by opening the Android Virtual Device Manager. 
+	    Click New and follow the steps. The higher the Emulator's API, the better.
+	</p>
+	
+	<p>
+		Run your NotePad project by pressing Run on NotePadProvider.java in Eclipse. 
+		When prompted, select the emulator you just created. Monitor the Console in Eclipse. 
+		Let the NotePad.apk install on the emulator. 
+		Now watch the LogCat and wait as it attempts to register with your SymmetricDS Master Node.
+	</p>
+	
+</div>
+</div><div xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="30%" align="left"><a accesskey="p" href="advanced.html">Prev</a>&nbsp;</td><td width="40%" align="center"><a accesskey="h" href="user-guide.html">Home</a></td><td width="30%" align="right">&nbsp;<a accesskey="n" href="data-model.html">Next</a></td></tr><tr><td width="30%" align="left" valign="top">Chapter&nbsp;5.&nbsp;Advanced Topics&nbsp;</td><td width="40%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.symmetricds.org/" title="SymmetricDS">SymmetricDS
+                                        </a></span></td><td width="30%" align="right" valign="top">&nbsp;Appendix&nbsp;A.&nbsp;Data Model</td></tr></table></div></body></html>

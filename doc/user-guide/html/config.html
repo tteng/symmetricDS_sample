@@ -1,0 +1,1879 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;3.&nbsp;Configuration</title><link rel="stylesheet" href="css/docbook-style.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.72.0"><link rel="start" href="user-guide.html" title="SymmetricDS User Guide"><link rel="up" href="user-guide.html" title="SymmetricDS User Guide"><link rel="prev" href="setup.html" title="Chapter&nbsp;2.&nbsp;Setup"><link rel="next" href="manage.html" title="Chapter&nbsp;4.&nbsp;Manage"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns:fo="http://www.w3.org/1999/XSL/Format" id="banner"><a style="border:none;" href="http://www.symmetricds.org/" title="SymmetricDS User Guide"><img style="border:none;" alt="SymmetricDS" src="images/banner-logo.gif"></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="config"></a>Chapter&nbsp;3.&nbsp;Configuration</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="config.html#configuration-groups">3.1. Groups</a></span></dt><dt><span class="section"><a href="config.html#configuration-group-links">3.2. Group Links</a></span></dt><dt><span class="section"><a href="config.html#configuration-channels">3.3. Channels</a></span></dt><dt><span class="section"><a href="config.html#configuration-table-triggers">3.4. Table Triggers</a></span></dt><dd><dl><dt><span class="section"><a href="config.html#configuration-trigger-router">3.4.1. Linking Triggers</a></span></dt><dd><dl><dt><span class="section"><a href="config.html#configuration-trigger-router-enabled">3.4.1.1. Enable / disable trigger router</a></span></dt><dt><span class="section"><a href="config.html#configuration-trigger-router-ping-back">3.4.1.2. Enabling "Ping Back"</a></span></dt></dl></dd><dt><span class="section"><a href="config.html#configuration-trigger-lobs">3.4.2. Large Objects</a></span></dt><dt><span class="section"><a href="config.html#configuration-trigger-external-select">3.4.3. External Select</a></span></dt><dt><span class="section"><a href="config.html#configuration-dead-triggers">3.4.4. Dead Triggers</a></span></dt><dt><span class="section"><a href="config.html#changing-triggers">3.4.5. Changing Triggers</a></span></dt></dl></dd><dt><span class="section"><a href="config.html#file-sync">3.5. File Triggers / File Synchronization</a></span></dt><dd><dl><dt><span class="section"><a href="config.html#filesync-overview">3.5.1. Overview</a></span></dt><dt><span class="section"><a href="config.html#filesync-operation">3.5.2. Operation</a></span></dt><dt><span class="section"><a href="config.html#filesync-beanshell">3.5.3. File Sync Bean Shell Scripts</a></span></dt><dt><span class="section"><a href="config.html#filesync-examples">3.5.4. File Sync Examples</a></span></dt><dd><dl><dt><span class="section"><a href="config.html#filesync-example-1">3.5.4.1. Sync Text Files From Server To Client</a></span></dt><dt><span class="section"><a href="config.html#filesync-example-2">3.5.4.2. Route changes to a specific node based on a directory
+name</a></span></dt></dl></dd></dl></dd><dt><span class="section"><a href="config.html#configuration-routers">3.6. Routers</a></span></dt><dd><dl><dt><span class="section"><a href="config.html#configuration-default-router">3.6.1. Default Router</a></span></dt><dt><span class="section"><a href="config.html#configuration-column-match-router">3.6.2. Column Match Router</a></span></dt><dt><span class="section"><a href="config.html#configuration-lookup-table-router">3.6.3. Lookup Table Router</a></span></dt><dt><span class="section"><a href="config.html#configuration-subselect-router">3.6.4. Subselect Router</a></span></dt><dt><span class="section"><a href="config.html#configuration-scripted-router">3.6.5. Scripted Router</a></span></dt><dt><span class="section"><a href="config.html#configuration-audit-table-router">3.6.6. Audit Table Router</a></span></dt><dt><span class="section"><a href="config.html#configuration-routing-external-select">3.6.7. Utilizing External Select when Routing</a></span></dt></dl></dd><dt><span class="section"><a href="config.html#configuration-conflicts">3.7. Conflicts</a></span></dt><dd><dl><dt><span class="section"><a href="config.html#conflicts">3.7.1. Conflict Detection and Resolution</a></span></dt></dl></dd><dt><span class="section"><a href="config.html#configuration-transforms">3.8. Transforms</a></span></dt><dd><dl><dt><span class="section"><a href="config.html#transform-data-tables">3.8.1. Transform Configuration Tables</a></span></dt><dt><span class="section"><a href="config.html#transform-data-types">3.8.2. Transformation Types</a></span></dt></dl></dd><dt><span class="section"><a href="config.html#configuration-load-filters">3.9. Load Filters</a></span></dt><dd><dl><dt><span class="section"><a href="config.html#data-load-filter-config">3.9.1. Load Filter Configuration Table</a></span></dt><dt><span class="section"><a href="config.html#data-load-filter-variables">3.9.2. Variables available to Data Load Filters</a></span></dt><dt><span class="section"><a href="config.html#data-load-filter-examples">3.9.3. Data Load Filter Example</a></span></dt></dl></dd><dt><span class="section"><a href="config.html#configuration-grouplets">3.10. Grouplets</a></span></dt><dd><dl><dt><span class="section"><a href="config.html#grouplet-example">3.10.1. Grouplet Example</a></span></dt></dl></dd><dt><span class="section"><a href="config.html#configuration-parameters">3.11. Parameters</a></span></dt><dt><span class="section"><a href="config.html#configuration-export">3.12. Export</a></span></dt><dt><span class="section"><a href="config.html#configuration-import">3.13. Import</a></span></dt><dt><span class="section"><a href="config.html#configuration-uninstall">3.14. Uninstall</a></span></dt></dl></div>
+	
+	
+	
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-groups"></a>3.1.&nbsp;Groups</h2></div></div></div>
+		
+		<p>
+		Groups are defined in the
+		<a href="data-model.html#table_node_group" title="A.20.&nbsp;NODE_GROUP">NODE_GROUP</a>
+		table. The following SQL statements would create node groups for "corp"
+		and "store" based on our retail store example.
+		</p><pre class="programlisting"> 
+        insert into SYM_NODE_GROUP
+		  (node_group_id, description) 
+          values ('store', 'A retail store node');
+		
+		insert into SYM_NODE_GROUP 
+          (node_group_id, description) 
+          values ('corp', 'A corporate node');</pre><p>
+		</p>
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-group-links"></a>3.2.&nbsp;Group Links</h2></div></div></div>
+		
+		<p>
+		Group links are defined in the
+		<a href="data-model.html#table_node_group_link" title="A.22.&nbsp;NODE_GROUP_LINK">NODE_GROUP_LINK</a>
+		table.  Links define how a node that belongs to a group will communicate with nodes in other groups.
+        The following are the communication mechanisms that can be configured.
+        
+        </p><div class="variablelist"><dl><dt><span class="term">
+        <span><strong class="command">Push (P)</strong></span>
+        </span></dt><dd>
+        <p>Indicates that the source node will initiate communication over an HTTP PUT.</p>
+        </dd><dt><span class="term">
+        <span><strong class="command">Wait for Pull (W)</strong></span>
+        </span></dt><dd>
+        <p>Indicates that the source node will <span class="emphasis"><em>wait</em></span> for a target node to connect via an HTTP GET to pull data.</p>
+        </dd><dt><span class="term">
+        <span><strong class="command">Route-only (R)</strong></span>
+        </span></dt><dd>
+        <p>Route-only indicates that the data isn't going to be transported via SymmetricDS.  This action type might be useful when using an XML publishing
+        router or an audit table changes router.</p>
+        </dd></dl></div><p> 
+        </p>
+        
+        <p>The link also defines if configuration data will be synchronized on the link.  For example, you might not want remote nodes to be able to change
+        configuration and effect other nodes in the network.  In this case you would set <code class="literal">sync_config_enabled</code> to 0 on the appropriate link.</p>
+        
+        <p>A link can be configured to use the same node
+        group as the source and the target. This configuration allows a node
+        group to sync with every other node in its group.</p>
+        
+        <p>
+        The following SQL statements
+		links the "corp" and "store" node groups for synchronization. It
+		configures the "store" nodes to push their data changes to the "corp"
+		nodes, and the "corp" nodes to send changes to "store" nodes by waiting
+		for a pull.
+		</p><pre class="programlisting"> 
+        insert into SYM_NODE_GROUP_LINK
+		  (source_node_group, target_node_group, data_event_action) 
+          values ('store', 'corp', 'P');
+           
+        insert into SYM_NODE_GROUP_LINK
+		  (source_node_group, target_node_group, data_event_action) 
+          values ('corp', 'store', 'W');</pre><p>
+		</p>		
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-channels"></a>3.3.&nbsp;Channels</h2></div></div></div>
+		
+		<p>
+		By categorizing data into channels and assigning them to
+		<a href="data-model.html#table_trigger" title="A.38.&nbsp;TRIGGER">TRIGGER</a>
+		s, the user gains more control and visibility into the flow of data. In
+		addition, SymmetricDS allows for synchronization to be enabled,
+		suspended, or scheduled by channels as well. The frequency of
+		synchronization and order that data gets synchronized is also controlled
+		at the channel level.
+		</p>
+		
+		<p>
+		The following SQL statements setup channels for a retail store. An
+		"item" channel includes data for items and their prices, while a
+		"sale_transaction" channel includes data for ringing sales at a
+		register.
+		</p><pre class="programlisting"> 
+        insert into SYM_CHANNEL (channel_id, rocessing_order, max_batch_size, max_batch_to_send,
+		  extract_period_millis, batch_algorithm, enabled, description) 
+          values ('item', 10, 1000, 10, 0, 'default', 1, 'Item and pricing data'); 
+        
+        insert into SYM_CHANNEL (channel_id, processing_order, max_batch_size,
+		  max_batch_to_send, extract_period_millis, batch_algorithm, enabled, description) 
+          values ('sale_transaction', 1, 1000, 10, 60000,
+		  'transactional', 1, 'retail sale transactions from register');</pre><p>
+		</p>
+		
+		<p>
+		Batching is the grouping of data, by channel, to be transferred and
+		committed at the client together. There are three different
+		out-of-the-box batching algorithms which may be configured in the
+		batch_algorithm column on channel.
+		</p><div class="variablelist"><dl><dt><span class="term">
+		<span><strong class="command">default</strong></span>
+		</span></dt><dd>
+		<p>All changes that happen in a transaction are guaranteed to
+		be batched together. Multiple transactions will be batched and committed
+		together until there is no more data to be sent or the max_batch_size is
+		reached.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">transactional</strong></span>
+		</span></dt><dd>
+		<p>Batches will map directly to database transactions. If
+		there are many small database transactions, then there will be many
+		batches. The max_batch_size column has no effect.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">nontransactional</strong></span>
+		</span></dt><dd>
+		<p>Multiple transactions will be batched and committed
+		together until there is no more data to be sent or the max_batch_size is
+		reached. The batch will be cut off at the max_batch_size regardless of
+		whether it is in the middle of a transaction.</p>
+		</dd></dl></div><p>
+		</p>
+		
+		<p>
+		If a channel contains
+		<span class="emphasis"><em>only</em></span>
+		tables that will be synchronized in one direction and and data is routed
+		to all the nodes in the target node groups, then batching on the channel
+		can be optimized to share batches across nodes. This is an important
+		feature when data needs to be routed to thousands of nodes. When this
+		mode is detected, you will see batches created in
+		<a href="data-model.html#table_outgoing_batch" title="A.29.&nbsp;OUTGOING_BATCH">OUTGOING_BATCH</a>
+		with the
+		<code class="literal">common_flag</code>
+		set to 1.
+		</p>
+		
+		<p>
+		There are also several size-related parameters that can be set by
+		channel. They include:
+		</p><div class="variablelist"><dl><dt><span class="term">
+		<span><strong class="command">max_batch_size</strong></span>
+		</span></dt><dd>
+		<p>Specifies the maximum number of data events to process
+		within a batch for this channel.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">max_batch_to_send</strong></span>
+		</span></dt><dd>
+		<p>Specifies the maximum number of batches to send for a given
+		channel during a 'synchronization' between two nodes. A
+		'synchronization' is equivalent to a push or a pull. For example, if
+		there are 12 batches ready to be sent for a channel and
+		max_batch_to_send is equal to 10, then only the first 10 batches will be
+		sent even though 12 batches are ready.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">max_data_to_route</strong></span>
+		</span></dt><dd>
+		<p>Specifies the maximum number of data rows to route for a
+		channel at a time.</p>
+		</dd></dl></div><p>
+		</p>
+		
+		<p>Based on your particular synchronization requirements, you
+		can also specify whether old, new, and primary key data should be read
+		and included during routing for a given channel. These are controlled by
+		the columns use_old_data_to_route, use_row_data_to_route, and
+		use_pk_data_to_route, respectively. By default, they are all 1 (true).</p>
+		
+		<p>
+		If data on a particular channel contains big lobs, you can set
+		the column contains_big_lob to 1 (true) to provide SymmetricDS the hint
+		that the channel contains big lobs. Some databases have shortcuts that
+		SymmetricDS can take advantage of if it knows that the lob columns in
+		<a href="data-model.html#table_data" title="A.3.&nbsp;DATA">DATA</a>
+		aren't going to contain large lobs. The definition of how large a 'big'
+		lob is varies from database to database.
+		</p>
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-table-triggers"></a>3.4.&nbsp;Table Triggers</h2></div></div></div>
+	
+	
+		<p>
+		SymmetricDS captures synchronization data using database triggers.
+		SymmetricDS' Triggers are defined in the
+		<a href="data-model.html#table_trigger" title="A.38.&nbsp;TRIGGER">TRIGGER</a>
+		table. Each record is used by SymmetricDS when generating database
+		triggers. Database triggers are only generated when a trigger is
+		associated with a
+		<a href="data-model.html#table_router" title="A.33.&nbsp;ROUTER">ROUTER</a>
+		whose
+		<code class="literal">source_node_group_id</code>
+		matches the node group id of the current node.
+		</p>
+		
+		<p>
+		The
+		<code class="literal">source_table_name</code>
+		may contain the asterisk ('*') wildcard character so that one
+		<a href="data-model.html#table_trigger" title="A.38.&nbsp;TRIGGER">TRIGGER</a>
+		table entry can define synchronization for many tables. System tables
+		and any tables that start with the SymmetricDS table prefix will be
+		excluded. A list of wildcard tokens can also be supplied. If there are
+		multiple tokens, they should be delimited with a comma. A wildcard token
+		can also start with a bang ('!') to indicate an exclusive match. Tokens
+		are always evalulated from left to right. When a table match is made,
+		the table is either added to or removed from the list of tables. If
+		another trigger already exists for a table, then that table is not
+		included in the wildcard match (the explictly defined trigger entry take
+		precendence).
+		</p>
+		
+		<p>
+		When determining whether a data change has occurred or not, by defalt
+		the triggers will record a change even if the data was updated to the
+		same value(s) they were originally. For example, a data change will be
+		captured if an update of one column in a row updated the value to the
+		same value it already was. There is a global property,
+		<code class="literal">trigger.update.capture.changed.data.only.enabled</code>
+		(false by default), that allows you to override this behavior. When set
+		to true, SymmetricDS will only capture a change if the data has truly
+		changed (i.e., when the new column data is not equal to the old column
+		data).
+		</p>
+		
+		<div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3>
+		The property
+		<code class="literal">trigger.update.capture.changed.data.only.enabled</code>
+		is currently only supported in the MySQL, DB2, SQL Server and Oracle dialects.
+		</div>
+		
+		<p>
+		The following SQL statement defines a trigger that will capture data for
+		a table named "item" whenever data is inserted, updated, or deleted. The
+		trigger is assigned to a channel also called 'item'.
+		</p><pre class="programlisting"> 
+        insert into SYM_TRIGGER (trigger_id, source_table_name,
+          channel_id, last_update_time, create_time)
+		  values ('item', 'item', 'item', current_timestamp, current_timestamp); </pre><p>
+		</p>
+		
+		<div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3>
+		<p>Note that many databases allow for multiple triggers of the
+		same type to be defined. Each database defines the order in which the
+		triggers fire differently. If you have additional triggers beyond those
+		SymmetricDS installs on your table, please consult your database
+		documentation to determine if there will be issues with the ordering of
+		the triggers.</p>
+		</div>
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-trigger-router"></a>3.4.1.&nbsp;Linking Triggers</h3></div></div></div>
+			
+
+			<p>
+			The
+			<a href="data-model.html#table_trigger_router" title="A.40.&nbsp;TRIGGER_ROUTER">TRIGGER_ROUTER</a>
+			table is used to define which specific combinations of triggers and
+			routers are needed for your configuration. The relationship between
+			triggers and routers is many-to-many, so this table serves as the join
+			table to define which combinations are valid, as well as to define
+			settings available at the trigger-router level of granularity.
+			</p>
+			<p>
+			Three important controls can be configured for a specific Trigger /
+			Router combination: Enabled, Initial Loads and Ping Back. The parameters
+			for these can be found in the Trigger / Router mapping table,
+			<a href="data-model.html#table_trigger_router" title="A.40.&nbsp;TRIGGER_ROUTER">TRIGGER_ROUTER</a>
+			.
+			</p>
+			
+			<div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="configuration-trigger-router-enabled"></a>3.4.1.1.&nbsp;Enable / disable trigger router</h4></div></div></div>
+				
+				
+				<p>
+				Each individual trigger-router combination can be disabled or enabled if
+				needed. By default, a trigger router is enabled, but if you have a
+				reason you wish to define a trigger router combination prior to it being
+				active, you can set the
+				<code class="literal">enabled</code>
+				flag to 0. This will cause the trigger-router mapping to be sent to all
+				nodes, but the trigger-router mapping will not be considered active or
+				enabled for the purposes of capturing data changes or routing.
+				</p>
+			</div>
+			<div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="configuration-trigger-router-ping-back"></a>3.4.1.2.&nbsp;Enabling "Ping Back"</h4></div></div></div>
+				
+				
+				<p>
+				SymmetricDS, by default, avoids circular data changes. When a trigger
+				fires as a result of SymmetricDS itself (such as the case when sync on
+				incoming batch is set), it records the originating source node of the
+				data change in
+				<code class="literal">source_node_id</code>
+				. During routing, if routing results in sending the data back to the
+				originating source node, the data is not routed by default. If instead
+				you wish to route the data back to the originating node, you can set the
+				<code class="literal">ping_back_enabled</code>
+				column for the needed particular trigger / router combination. This will
+				cause the router to "ping" the data back to the originating node when it
+				usually would not.
+				</p>
+			</div>
+		</div>
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-trigger-lobs"></a>3.4.2.&nbsp;Large Objects</h3></div></div></div>
+			
+			<p>
+			Two lobs-related settings are also available on
+			<a href="data-model.html#table_trigger" title="A.38.&nbsp;TRIGGER">TRIGGER</a>
+			:
+			</p><div class="variablelist"><dl><dt><span class="term">
+			<span><strong class="command">use_stream_lobs</strong></span>
+			</span></dt><dd>
+			<p>Specifies whether to capture lob data as the trigger is
+			firing or to stream lob columns from the source tables using callbacks
+			during extraction. A value of 1 indicates to stream from the source via
+			callback; a value of 0, lob data is captured by the trigger.</p>
+			</dd><dt><span class="term">
+			<span><strong class="command">use_capture_lobs</strong></span>
+			</span></dt><dd>
+			<p>Provides a hint as to whether this trigger will capture big
+			lobs data. If set to 1 every effort will be made during data capture in
+			trigger and during data selection for initial load to use lob facilities
+			to extract and store data in the database.</p>
+			</dd></dl></div><p>
+			</p>
+		</div>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-trigger-external-select"></a>3.4.3.&nbsp;External Select</h3></div></div></div>
+			
+			
+			<p>
+			Occasionally, you may find that you need to capture and save away a
+			piece of data present in another table when a trigger is firing. This
+			data is typically needed for the purposes of determining where to
+			'route' the data to once routing takes place. Each trigger definition
+			contains an optional
+			<code class="literal">external_select</code>
+			field which can be used to specify the data to be captured. Once
+			captured, this data is available during routing in
+			<a href="data-model.html#table_data" title="A.3.&nbsp;DATA">DATA</a>
+			's
+			<code class="literal">external_data</code>
+			field. For these cases, place a SQL select statement which returns the
+			data item you need for routing in
+			<code class="literal">external_select</code>
+			. An example of the use of external select can be found in
+			<a href="config.html#configuration-routing-external-select" title="3.6.7.&nbsp;Utilizing External Select when Routing">Section&nbsp;3.6.7, &#8220;Utilizing External Select when Routing&#8221;</a>
+			.
+			</p>
+		</div>
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-dead-triggers"></a>3.4.4.&nbsp;Dead Triggers</h3></div></div></div>
+			
+			
+			<p>
+			Occasionally the decision of what data to load initially results in
+			additional triggers. These triggers, known as
+			<span class="emphasis"><em>Dead Triggers</em></span>
+			, are configured such that they do not capture any data changes. A
+			"dead" Trigger is one that does not capture data changes. In other
+			words, the
+			<code class="literal">sync_on_insert</code>
+			,
+			<code class="literal">sync_on_update</code>
+			, and
+			<code class="literal">sync_on_delete</code>
+			properties for the Trigger are all set to false. However, since the
+			Trigger is specified, it
+			<span class="emphasis"><em>will</em></span>
+			be included in the initial load of data for target Nodes.
+			</p>
+			
+			<p>Why might you need a Dead Trigger? A dead Trigger might be
+			used to load a read-only lookup table, for example. It could also be
+			used to load a table that needs populated with example or default data.
+			Another use is a recovery load of data for tables that have a single
+			direction of synchronization. For example, a retail store records sales
+			transactions that synchronize in one direction by trickling back to the
+			central office. If the retail store needs to recover all the sales
+			transactions from the central office, they can be sent are part of an
+			initial load from the central office by setting up dead Triggers that
+			"sync" in that direction.</p>
+			
+			<p>
+			The following SQL statement sets up a non-syncing dead Trigger that
+			sends the
+			<code class="literal">sale_transaction</code>
+			table to the "store" Node Group from the "corp" Node Group during an
+			initial load.
+			</p><pre class="programlisting"> 
+            insert into sym_trigger (TRIGGER_ID,SOURCE_CATALOG_NAME,
+			  SOURCE_SCHEMA_NAME,SOURCE_TABLE_NAME,CHANNEL_ID,
+			  SYNC_ON_UPDATE,SYNC_ON_INSERT,SYNC_ON_DELETE,
+			  SYNC_ON_INCOMING_BATCH,NAME_FOR_UPDATE_TRIGGER,
+			  NAME_FOR_INSERT_TRIGGER,NAME_FOR_DELETE_TRIGGER,
+			  SYNC_ON_UPDATE_CONDITION,SYNC_ON_INSERT_CONDITION,
+			  SYNC_ON_DELETE_CONDITION,EXTERNAL_SELECT,
+			  TX_ID_EXPRESSION,EXCLUDED_COLUMN_NAMES,
+			  CREATE_TIME,LAST_UPDATE_BY,LAST_UPDATE_TIME) 
+              values ('SALE_TRANSACTION_DEAD',null,null, 'SALE_TRANSACTION','transaction',
+			  0,0,0,0,null,null,null,null,null,null,null,null,null,
+			  current_timestamp,'demo',current_timestamp); 
+              
+            insert into sym_router (ROUTER_ID,TARGET_CATALOG_NAME,TARGET_SCHEMA_NAME,
+			  TARGET_TABLE_NAME,SOURCE_NODE_GROUP_ID,TARGET_NODE_GROUP_ID,ROUTER_TYPE,
+			  ROUTER_EXPRESSION,SYNC_ON_UPDATE,SYNC_ON_INSERT,SYNC_ON_DELETE,
+			  CREATE_TIME,LAST_UPDATE_BY,LAST_UPDATE_TIME) 
+              values ('CORP_2_STORE',null,null,null, 'corp','store',null,null,1,1,1,
+			  current_timestamp,'demo',current_timestamp); 
+              
+            insert into sym_trigger_router (TRIGGER_ID,ROUTER_ID,INITIAL_LOAD_ORDER,
+			  INITIAL_LOAD_SELECT,CREATE_TIME,LAST_UPDATE_BY,LAST_UPDATE_TIME) 
+              values ('SALE_TRANSACTION_DEAD','CORP_2_REGION',100,null,
+			  current_timestamp,'demo',current_timestamp); </pre><p>
+			</p>
+		</div>
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="changing-triggers"></a>3.4.5.&nbsp;Changing Triggers</h3></div></div></div>
+	        
+	        <p>
+	            A trigger row may be updated using SQL to change a synchronization definition.
+	            SymmetricDS will look for changes each night or whenever the Sync Triggers Job
+	            is run (see below).  For example, a change to place the table <code class="literal">price_changes</code>
+	            into the price channel would be accomplished with the following statement:
+	            </p><pre class="programlisting">
+	
+    update SYM_TRIGGER
+	  set channel_id = 'price',
+	    last_update_by = 'jsmith',
+	    last_update_time = current_timestamp
+	  where source_table_name = 'price_changes';
+	</pre><p>
+	            All configuration changes should be managed centrally at the registration node.  If enabled, configuration
+	            changes will be synchronized out to client nodes.  When trigger changes reach the client
+	            nodes the Sync Triggers Job will run automatically.
+	         </p>
+	         <p>
+	            Centrally, the trigger changes will not take effect until the Sync Triggers Job runs.
+	            Instead of waiting for the Sync Triggers Job to run overnight after making a Trigger
+	            change, you can invoke the syncTriggers() method over JMX or simply restart the SymmetricDS
+	            server.  A complete record of trigger changes is kept in the table  <a href="data-model.html#table_trigger_hist" title="A.39.&nbsp;TRIGGER_HIST">TRIGGER_HIST</a>,
+	            which was discussed in <a href="manage.html#sync-triggers" title="4.3.5.&nbsp;Sync Triggers Job">Section&nbsp;4.3.5, &#8220;Sync Triggers Job&#8221;</a>.
+	        </p>
+	    </div>
+	</div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="file-sync"></a>3.5.&nbsp;File Triggers / File Synchronization</h2></div></div></div>
+           
+
+<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="filesync-overview"></a>3.5.1.&nbsp;Overview</h3></div></div></div>
+
+
+<p> SymmetricDS not only supports the synchronization of
+database tables, but it also supports the synchronization of files and folders 
+from one node to another. </p>
+<p>
+File synchronization features include:
+
+</p><div class="itemizedlist"><ul type="disc"><li> Monitoring one or more file system directory locations for file and folder changes </li><li> Support synchronizing a different target directory than the source directory</li><li> Use of wild card expressions to &#8220;include&#8221; or
+&#8220;exclude&#8221; files </li><li> Choice of whether to recurse into subfolders
+of monitored directories </li><li> Use of existing SymmetricDS routers to subset
+target nodes based on file and directory metadata </li><li> Ability to specify if files will be synchronized on
+creation, or deletion, and/or modification </li><li> Ability to specify the frequency with which file systems are
+monitored for changes </li><li> Ability to extend file synchronization through
+scripts that run before or after a file is copied to its source location
+</li><li> Support for bidirectional file synchronization </li></ul></div><p>
+</p>
+<p> Like database synchronization, file synchronization is
+configured in a series of database tables. The configuration was
+designed to be similar to database synchronization in order to maintain
+consistency and to give database synchronization users a sense of
+familiarity. </p>
+<p>For database synchronization, SymmetricDS uses
+<a href="data-model.html#table_trigger" title="A.38.&nbsp;TRIGGER">TRIGGER</a> to configure which tables will capture data for synchronization
+and <a href="data-model.html#table_router" title="A.33.&nbsp;ROUTER">ROUTER</a> to designate which nodes will be the source of data changes
+and which nodes will receive the data changes.
+<a href="data-model.html#table_trigger_router" title="A.40.&nbsp;TRIGGER_ROUTER">TRIGGER_ROUTER</a> links triggers to routers. </p>
+<p> Likewise, for file synchronization, SymmetricDS uses <a href="data-model.html#table_file_trigger" title="A.9.&nbsp;FILE_TRIGGER">FILE_TRIGGER</a> to designate which base directories will be monitored.
+Each entry in <a href="data-model.html#table_file_trigger" title="A.9.&nbsp;FILE_TRIGGER">FILE_TRIGGER</a> designates one base directory to monitor for changes on
+the source system. The columns on <a href="data-model.html#table_file_trigger" title="A.9.&nbsp;FILE_TRIGGER">FILE_TRIGGER</a> provide additional
+settings for choosing specific files in the base directory that will be monitored, and whether to recurse into subdirectories, etc.  File triggers are linked to routers by
+<a href="data-model.html#table_file_trigger_router" title="A.10.&nbsp;FILE_TRIGGER_ROUTER">FILE_TRIGGER_ROUTER</a>. The file trigger router not only links the source
+and the target node groups, but it also optionally provides the ability to
+override the base directory name at the target. <a href="data-model.html#table_file_trigger_router" title="A.10.&nbsp;FILE_TRIGGER_ROUTER">FILE_TRIGGER_ROUTER</a> also
+provides a flag that indicates if the target node should be seeded with
+the files from the source node during SymmetricDS's initial load
+process. </p>
+</div>
+<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="filesync-operation"></a>3.5.2.&nbsp;Operation</h3></div></div></div>
+
+<p> Not only is file synchronization configured similar to database synchronization, but it also operates in a very similar way. The file system is monitored for changes via a
+background job that tracks the file system changes
+(this parallels the use of triggers to monitor for changes when synchronizing database changes).
+When a change is detected it is written to the <a href="data-model.html#table_file_snapshot" title="A.8.&nbsp;FILE_SNAPSHOT">FILE_SNAPSHOT</a>
+table. The file snapshot table represents the most recent known state of the
+monitored files. The file snapshot table has a SymmetricDS database trigger automatically installed
+on it so that when it is updated the changes are captured by SymmetricDS on an internal
+channel named <code class="literal">filesync</code>. </p>
+<p> The changes to <a href="data-model.html#table_file_snapshot" title="A.8.&nbsp;FILE_SNAPSHOT">FILE_SNAPSHOT</a> are then routed and batched by a file-synchronization-specific router
+that delegates to the configured router
+based on the <a href="data-model.html#table_file_trigger_router" title="A.10.&nbsp;FILE_TRIGGER_ROUTER">FILE_TRIGGER_ROUTER</a> configuration. The
+ file sync router can
+make routing decisions based on the column data of the snapshot table, columns which contain attributes of the file like the name, path,
+size, and last modified time. Both old and new file snapshot data are also
+available. The router can, for example, parse the path or name of the
+file and use it as the node id to route to. </p>
+<p> Batches of file snapshot changes are stored on the
+<code class="literal">filesync</code> channel in <a href="data-model.html#table_outgoing_batch" title="A.29.&nbsp;OUTGOING_BATCH">OUTGOING_BATCH</a>. The existing SymmetricDS pull and
+push jobs ignore the <code class="literal">filesync</code> channel. Instead, they are processed by
+file-synchronization-specific push and pull jobs. </p>
+<p> When transferring data, the file sync push and pull jobs build a zip
+file dynamically based on the batched snapshot data. The
+zip file contains a directory per batch. The directory name is the
+<code class="literal">batch_id</code>. A <code class="literal">sync.bsh</code> Bean Shell
+script is generated and placed in the root of each batch directory. The Bean Shell script contains the commands to copy
+or delete files at their file destination from an extracted zip in the staging directory on the
+target node. The zip file is downloaded in the
+case of a pull, or, in the case of a push, is uploaded as an HTTP multi-part attachment.
+Outgoing zip files are written and transferred from the
+outgoing staging directory. Incoming zip files are staged in the
+<code class="literal">filesync_incoming</code> staging directory by source node id. The
+<code class="literal">filesync_incoming/{node_id}</code> staging directory is cleared out before each
+subsequent delivery of files. </p>
+<p> The acknowledgement of a batch happens the same way it is acknowledged in database synchronization. The client responds with an acknowledgement as part of the response
+during a file push or pull. </p>
+</div>
+
+<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="filesync-beanshell"></a>3.5.3.&nbsp;File Sync Bean Shell Scripts</h3></div></div></div>
+
+<p> There are two types of Bean Shell scripts that can be
+leveraged to customize file synchronization behavior: <code class="literal">before_copy_script</code>
+and <code class="literal">after_copy_script</code>. </p>
+<p>
+Each of these scripts have access to local variables that can be read or
+set to affect the behavior of copying files.
+
+</p><div class="variablelist"><dl><dt><span class="term">
+<span><strong class="command">targetBaseDir</strong></span>
+</span></dt><dd>
+<p> The preset base directory as configured in <a href="data-model.html#table_file_trigger" title="A.9.&nbsp;FILE_TRIGGER">FILE_TRIGGER</a> or
+overwritten in <a href="data-model.html#table_file_trigger_router" title="A.10.&nbsp;FILE_TRIGGER_ROUTER">FILE_TRIGGER_ROUTER</a>. This variable can be set by the
+<code class="literal">before_copy_script</code> to set a different target directory. </p>
+</dd><dt><span class="term">
+<span><strong class="command">targetFileName</strong></span>
+</span></dt><dd>
+<p> The name of the file that is being synchronized. This variable can be overwritten by the
+<code class="literal">before_copy_script</code> to rename a file at the target. </p>
+</dd><dt><span class="term">
+<span><strong class="command">targetRelativeDir</strong></span>
+</span></dt><dd>
+<p> The name of a directory relative to the target base directory to which the target file will be copied.  The 
+default value of this variable is the relative directory of the source.  For example, if the source base directory is 
+<code class="literal">/src</code> and the target base directory is <code class="literal">/tgt</code> and the file <code class="literal">/src/subfolder/1.txt</code>
+is changed, then the default targetRelativeDir will be <code class="literal">subfolder</code>.
+This variable can be overwritten by the
+<code class="literal">before_copy_script</code> to change the relative directory at the target. In the above example, if the variable is
+set to blank using the following script, then the target file will be copied to <code class="literal">/tgt/1.txt</code>.
+</p><pre class="programlisting">
+targetRelativeDir = "";
+</pre><p>
+</p>
+</dd><dt><span class="term">
+<span><strong class="command">processFile</strong></span>
+</span></dt><dd>
+<p>This is a variable that is set to true by default. A custom
+<code class="literal">before_copy_script</code> may process the file itself and set this variable to
+false to indicate that the file should NOT be copied to its target
+location. </p>
+</dd><dt><span class="term">
+<span><strong class="command">sourceFileName</strong></span>
+</span></dt><dd>
+<p>This is the name of the file.</p>
+</dd><dt><span class="term">
+<span><strong class="command">sourceFilePath</strong></span>
+</span></dt><dd>
+<p>This is the path where the file can be found relative to
+the batch directory.</p>
+</dd><dt><span class="term">
+<span><strong class="command">batchDir</strong></span>
+</span></dt><dd>
+<p>This is the staging directory where the batch has been
+extracted. The batchDir + sourceFilePath + sourceFileName can be used to
+locate the extracted file. </p>
+</dd><dt><span class="term">
+<span><strong class="command">engine</strong></span>
+</span></dt><dd>
+<p>This is the bound instance of the ISymmetricEngine that is
+processing a file. It gives access to all of the APIs available in
+SymmetricDS. </p>
+</dd><dt><span class="term">
+<span><strong class="command">sourceNodeId </strong></span>
+</span></dt><dd>
+<p>This is a bound variable that represents the nodeId that is
+the source of the file.</p>
+</dd><dt><span class="term">
+<span><strong class="command">log</strong></span>
+</span></dt><dd>
+<p>This is the bound instance of an <code class="literal">org.slf4j.Logger</code> that can
+be used to log to the SymmetricDS log file.</p>
+</dd></dl></div><p>
+
+</p>
+</div>
+<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="filesync-examples"></a>3.5.4.&nbsp;File Sync Examples</h3></div></div></div>
+
+
+<div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="filesync-example-1"></a>3.5.4.1.&nbsp;Sync Text Files From Server To Client</h4></div></div></div>
+
+<p>
+The following example is for a configuration with client and server node
+groups. Creation, modification, and deletion of files with the extension
+of <code class="literal">txt</code> will be captured recursively
+in the <code class="literal">/filesync/server/all</code>
+directory. A before copy script will set the targetBaseDir to
+<code class="literal">/filesync/clients/{externalId}</code>.
+
+</p><pre class="programlisting">INSERT INTO sym_file_trigger
+  (trigger_id,base_dir,recurse,includes_files,excludes_files,sync_on_create,
+   sync_on_modified,sync_on_delete,sync_on_ctl_file,delete_after_sync,before_copy_script,after_copy_script,
+   create_time,last_update_by,last_update_time)
+VALUES ('sync_directory','/filesync/server/all',1,'*.txt',null,1,1,1,0,0,
+  'targetBaseDir = "/filesync/clients/" +
+  engine.getParameterService().getExternalId();',null,current_timestamp,'example',
+  current_timestamp);
+
+INSERT INTO sym_file_trigger_router
+ (trigger_id,router_id,enabled,initial_load_enabled,target_base_dir,
+  conflict_strategy,create_time,last_update_by,last_update_time)
+VALUES
+  ('sync_directory','server_2_client',1,1,'','SOURCE_WINS',current_timestamp,
+  'example',current_timestamp);
+
+INSERT INTO sym_router
+  (router_id,target_catalog_name,target_schema_name,target_table_name,
+  source_node_group_id,target_node_group_id,
+  router_type,router_expression,sync_on_update,sync_on_insert,sync_on_delete,
+  create_time,last_update_by,last_update_time)
+VALUES
+  ('server_2_client',null,null,null,'server','client','default',null,1,1,1,
+   current_timestamp,'example',current_timestamp);
+</pre><p>
+</p>
+</div>
+
+<div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="filesync-example-2"></a>3.5.4.2.&nbsp;Route changes to a specific node based on a directory
+name</h4></div></div></div>
+
+<p>
+The following example is also for a configuration with client and server
+node groups. This example monitors the <code class="literal">/filesync/server/nodes</code> directory.
+It expects the directory to contain subdirectories that are named by the node_ids
+in the client group. Any files put directly into a folder with the name
+of the node will be routed to that node.
+</p>
+<p>
+Note that the router is a <a href="config.html#configuration-column-match-router" title="3.6.2.&nbsp;Column Match Router">Section&nbsp;3.6.2, &#8220;Column Match Router&#8221;</a> that is matching the client node_id with the value of the RELATIVE_DIR column in
+<a href="data-model.html#table_file_snapshot" title="A.8.&nbsp;FILE_SNAPSHOT">FILE_SNAPSHOT</a>.  Because the router is looking for an exact match any files in subdirectories would result in a path
+of node_id/subdir which would not match.
+</p><pre class="programlisting">
+
+INSERT INTO sym_file_trigger
+  (trigger_id,base_dir,recurse,includes_files,excludes_files,sync_on_create,
+  sync_on_modified,sync_on_delete,sync_on_ctl_file,delete_after_sync,before_copy_script,after_copy_script,create_time,
+  last_update_by,last_update_time)
+VALUES
+  ('node_specific','/filesync/server/nodes',1,null,null,1,1,1,0,0,'',null,
+  current_timestamp,'example',current_timestamp);
+
+INSERT INTO sym_file_trigger_router
+  (trigger_id,router_id,enabled,initial_load_enabled,target_base_dir,
+  conflict_strategy,create_time,last_update_by,last_update_time)
+VALUES
+  ('node_specific','router_files_to_node',1,1,'/filesync/clients','SOURCE_WINS',
+  current_timestamp,'example',current_timestamp);
+
+INSERT INTO sym_router
+  (router_id,target_catalog_name,target_schema_name,target_table_name,
+   source_node_group_id,target_node_group_id,router_type,router_expression,
+   sync_on_update,sync_on_insert,sync_on_delete,create_time,last_update_by,
+   last_update_time)
+VALUES
+  ('router_files_to_node',null,null,null,'server','client','column',
+  'RELATIVE_DIR = :NODE_ID ',1,1,1,current_timestamp,'example', current_timestamp);
+
+</pre><p>
+</p>
+</div>
+</div>
+
+
+
+</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-routers"></a>3.6.&nbsp;Routers</h2></div></div></div>
+	
+		<p>
+		Routers provided in the base implementation currently include:
+		</p><div class="itemizedlist"><ul type="disc"><li>Default Router - a router that sends all data to
+		all nodes that belong to the target node group defined in the router.</li><li>Column Match Router - a router that compares old or
+		new column values to a constant value or the value of a node's
+		external_id or node_id.</li><li>Lookup Router - a router which can be configured to
+		determine routing based on an existing or ancillary table specifically
+		for the purpose of routing data.</li><li>Subselect Router - a router that executes a SQL
+		expression against the database to select nodes to route to. This SQL
+		expression can be passed values of old and new column values.</li><li>Scripted Router - a router that executes a Bean
+		Shell script expression in order to select nodes to route to. The script
+		can use the old and new column values.</li><li>Xml Publishing Router - a router the publishes data
+		changes directly to a messaging solution instead of transmitting changes
+		to registered nodes. This router must be configured manually in XML as
+		an extension point.</li><li>Audit Table Router - a router that inserts into an
+		automatically created audit table. It records captured changes to tables
+		that it is linked to. </li></ul></div><p>
+		The mapping between the set of triggers and set of routers is
+		many-to-many. This means that one trigger can capture changes and route
+		to multiple locations. It also means that one router can be defined an
+		associated with many different triggers.
+		</p>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-default-router"></a>3.6.1.&nbsp;Default Router</h3></div></div></div>
+		
+		
+		<p>
+		The simplest router is a router that sends all the data that is captured
+		by its associated triggers to all the nodes that belong to the target
+		node group defined in the router. A router is defined as a row in the
+		<a href="data-model.html#table_router" title="A.33.&nbsp;ROUTER">ROUTER</a>
+		table. It is then linked to triggers in the
+		<a href="data-model.html#table_trigger_router" title="A.40.&nbsp;TRIGGER_ROUTER">TRIGGER_ROUTER</a>
+		table.
+		</p>
+		
+		<p>
+		The following SQL statement defines a router that will send data from
+		the 'corp' group to the 'store' group.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, create_time,
+		last_update_time) values ('corp-2-store','corp', 'store',
+		current_timestamp, current_timestamp); </pre><p>
+		</p>
+		
+		<p>
+		The following SQL statement maps the 'corp-2-store' router to the item
+		trigger.
+		</p><pre class="programlisting"> insert into SYM_TRIGGER_ROUTER
+		(trigger_id, router_id, initial_load_order, create_time,
+		last_update_time) values ('item', 'corp-2-store', 1, current_timestamp,
+		current_timestamp); </pre><p>
+		</p>
+		</div>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-column-match-router"></a>3.6.2.&nbsp;Column Match Router</h3></div></div></div>
+		
+		
+		<p>
+		Sometimes requirements may exist that require data to be routed based on
+		the current value or the old value of a column in the table that is
+		being routed. Column routers are configured by setting the
+		<code class="literal">router_type</code>
+		column on the
+		<a href="data-model.html#table_router" title="A.33.&nbsp;ROUTER">ROUTER</a>
+		table to
+		<code class="literal">column</code>
+		and setting the
+		<code class="literal">router_expression</code>
+		column to an equality expression that represents the expected value of
+		the column.
+		</p>
+		
+		<p>The first part of the expression is always the column name.
+		The column name should always be defined in upper case. The upper case
+		column name prefixed by OLD_ can be used for a comparison being done
+		with the old column data value.</p>
+		
+		<p>The second part of the expression can be a constant value,
+		a token that represents another column, or a token that represents some
+		other SymmetricDS concept. Token values always begin with a colon (:).</p>
+		
+		<p>
+		Consider a table that needs to be routed to all nodes in the target
+		group only when a status column is set to 'READY TO SEND.' The following
+		SQL statement will insert a column router to accomplish that.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-ok','corp', 'store', 'column', 'STATUS=READY TO SEND',
+		current_timestamp, current_timestamp); </pre><p>
+		</p>
+		
+		<p>
+		Consider a table that needs to be routed to all nodes in the target
+		group only when a status column changes values. The following SQL
+		statement will insert a column router to accomplish that. Note the use
+		of OLD_STATUS, where the OLD_ prefix gives access to the old column
+		value.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-status','corp', 'store', 'column', 'STATUS!=:OLD_STATUS',
+		current_timestamp, current_timestamp); </pre><p>
+		</p>
+		
+		<p>
+		Consider a table that needs to be routed to only nodes in the target
+		group whose STORE_ID column matches the external id of a node. The
+		following SQL statement will insert a column router to accomplish that.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-id','corp', 'store', 'column', 'STORE_ID=:EXTERNAL_ID',
+		current_timestamp, current_timestamp); </pre><p>
+		Attributes on a
+		<a href="data-model.html#table_node" title="A.17.&nbsp;NODE">NODE</a>
+		that can be referenced with tokens include:
+		</p><div class="itemizedlist"><ul type="disc"><li>:NODE_ID</li><li>:EXTERNAL_ID</li><li>:NODE_GROUP_ID</li></ul></div><p>
+		Captured EXTERNAL_DATA is also available for routing as a virtual
+		column.
+		</p>
+		
+		<p>
+		Consider a table that needs to be routed to a redirect node defined by
+		its external id in the
+		<a href="data-model.html#table_registration_redirect" title="A.31.&nbsp;REGISTRATION_REDIRECT">REGISTRATION_REDIRECT</a>
+		table. The following SQL statement will insert a column router to
+		accomplish that.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-redirect','corp', 'store', 'column',
+		'STORE_ID=:REDIRECT_NODE', current_timestamp, current_timestamp); </pre><p>
+		</p>
+		
+		<p>
+		More than one column may be configured in a router_expression. When more
+		than one column is configured, all matches are added to the list of
+		nodes to route to. The following is an example where the STORE_ID column
+		may contain the STORE_ID to route to or the constant of ALL which
+		indicates that all nodes should receive the update.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-multiple-matches','corp', 'store', 'column',
+		'STORE_ID=ALL or STORE_ID=:EXTERNAL_ID', current_timestamp,
+		current_timestamp); </pre><p>
+		</p>
+		
+		<p>
+		The NULL keyword may be used to check if a column is null. If the column
+		is null, then data will be routed to all nodes who qualify for the
+		update. This following is an example where the STORE_ID column is used
+		to route to a set of nodes who have a STORE_ID equal to their
+		EXTERNAL_ID, or to all nodes if the STORE_ID is null.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-multiple-matches','corp', 'store', 'column',
+		'STORE_ID=NULL or STORE_ID=:EXTERNAL_ID', current_timestamp,
+		current_timestamp); </pre><p>
+		</p>
+		</div>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-lookup-table-router"></a>3.6.3.&nbsp;Lookup Table Router</h3></div></div></div>
+		
+		
+		<p>
+		A lookup table may contain the id of the node where data needs to be
+		routed. This could be an existing table or an ancillary table that is
+		added specifically for the purpose of routing data. Lookup table routers
+		are configured by setting the
+		<code class="literal">router_type</code>
+		column on the
+		<a href="data-model.html#table_router" title="A.33.&nbsp;ROUTER">ROUTER</a>
+		table to
+		<code class="literal">lookuptable</code>
+		and setting a list of configuration parameters in the
+		<code class="literal">router_expression</code>
+		column.
+		</p>
+		
+		<p>
+		Each of the following configuration parameters are required.
+		</p><div class="variablelist"><dl><dt><span class="term">
+		<span><strong class="command">LOOKUP_TABLE</strong></span>
+		</span></dt><dd>
+		<p>This is the name of the lookup table.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">KEY_COLUMN</strong></span>
+		</span></dt><dd>
+		<p>This is the name of the column on the table that is being
+		routed. It will be used as a key into the lookup table.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">LOOKUP_KEY_COLUMN</strong></span>
+		</span></dt><dd>
+		<p>This is the name of the column that is the key on the
+		lookup table.</p>
+		</dd><dt><span class="term">
+		<span><strong class="command">EXTERNAL_ID_COLUMN</strong></span>
+		</span></dt><dd>
+		<p>This is the name of the column that contains the
+		external_id of the node to route to on the lookup table.</p>
+		</dd></dl></div><p>
+		</p>
+		
+		<p>Note that the lookup table will be read into memory and
+		cached for the duration of a routing pass for a single channel.</p>
+		
+		<p>
+		Consider a table that needs to be routed to a specific store, but the
+		data in the changing table only contains brand information. In this
+		case, the STORE table may be used as a lookup table.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-ok','corp', 'store', 'lookuptable', 'LOOKUP_TABLE=STORE
+		KEY_COLUMN=BRAND_ID LOOKUP_KEY_COLUMN=BRAND_ID
+		EXTERNAL_ID_COLUMN=STORE_ID', current_timestamp, current_timestamp); </pre><p>
+		</p>
+		</div>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-subselect-router"></a>3.6.4.&nbsp;Subselect Router</h3></div></div></div>
+		
+		
+		<p>
+		Sometimes routing decisions need to be made based on data that is not in
+		the current row being synchronized. A 'subselect' router can be used in
+		these cases. A 'subselect' is configured with a
+		<code class="literal">router_expression</code>
+		that is a SQL select statement which returns a result set of the node
+		ids that need routed to. Column tokens can be used in the SQL expression
+		and will be replaced with row column data. The overhead of using this
+		router type is high because the 'subselect' statement runs for each row
+		that is routed. It should not be used for tables that have a lot of rows
+		that are updated. It also has the disadvantage that if the data being
+		relied on to determine the node id has been deleted before routing takes
+		place, then no results would be returned and routing would not happen.
+		</p>
+		<p>
+		The
+		<code class="literal">router_expression</code>
+		you specify is appended to the following SQL statement in order to
+		select the node ids:
+		</p><pre class="programlisting">select c.node_id from sym_node c where
+		c.node_group_id=:NODE_GROUP_ID and c.sync_enabled=1 and ... </pre><p>
+		</p><p>
+		As you can see, you have access to information about the node currently
+		under consideration for routing through the 'c' alias, for example
+		<code class="literal">c.external_id</code>
+		. There are two node-related tokens you can use in your expression:
+		</p><div class="itemizedlist"><ul type="disc"><li>:NODE_GROUP_ID</li><li>:EXTERNAL_DATA</li></ul></div><p>
+		</p><p>
+		Column names representing data for the row in question are prefixed with
+		a colon as well, for example:
+		
+		<code class="literal">:EMPLOYEE_ID</code>
+		, or
+		<code class="literal">:OLD_EMPLOYEE_ID</code>
+		. Here, the OLD_ prefix indicates the value before the change in cases
+		where the old data has been captured.
+		
+		</p>
+		<p> For an example, consider the case where an Order table and
+		an OrderLineItem table need to be routed to a specific store. The Order
+		table has a column named order_id and STORE_ID. A store node has an
+		external_id that is equal to the STORE_ID on the Order table.
+		OrderLineItem, however, only has a foreign key to its Order of order_id.
+		To route OrderLineItems to the same nodes that the Order will be routed
+		to, we need to reference the master Order record.</p>
+		
+		<p>
+		There are two possible ways to solve this in SymmetricDS. One is to
+		configure a 'subselect' router_type on the
+		<a href="data-model.html#table_router" title="A.33.&nbsp;ROUTER">ROUTER</a>
+		table, shown below (The other possible approach is to use an
+		<code class="literal">external_select</code>
+		to capture the data via a trigger for use in a column match router,
+		demonstrated in
+		<a href="config.html#configuration-routing-external-select" title="3.6.7.&nbsp;Utilizing External Select when Routing">Section&nbsp;3.6.7, &#8220;Utilizing External Select when Routing&#8221;</a>
+		).
+		</p>
+		
+		<p>
+		Our solution utilizing subselect compares the external id of the current
+		node with the store id from the Order table where the order id matches
+		the order id of the current row being routed:
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store','corp', 'store', 'subselect', 'c.external_id in (select
+		STORE_ID from order where order_id=:ORDER_ID)', current_timestamp,
+		current_timestamp); </pre><p>
+		</p>
+		
+		<p>As a final note, please note in this example that the
+		parent row in Order must still exist at the moment of routing for the
+		child rows (OrderLineItem) to route, since the select statement is run
+		when routing is occurring, not when the change data is first captured. </p>
+		
+		</div>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-scripted-router"></a>3.6.5.&nbsp;Scripted Router</h3></div></div></div>
+		
+		
+		<p>
+		When more flexibility is needed in the logic to choose the nodes to
+		route to, then the a scripted router may be used. The currently
+		available scripting language is Bean Shell. Bean Shell is a Java-like
+		scripting language. Documentation for the Bean Shell scripting language
+		can be found at
+		<a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.beanshell.org/" target="_top">http://www.beanshell.org</a>
+		.
+		</p>
+		
+		<p>
+		The router_type for a Bean Shell scripted router is 'bsh'. The
+		router_expression is a valid Bean Shell script that:
+		</p><div class="itemizedlist"><ul type="disc"><li>
+		adds node ids to the
+		<code class="code">targetNodes</code>
+		collection which is bound to the script
+		</li><li>returns a new collection of node ids</li><li>returns a single node id</li><li>returns true to indicate that all nodes should be
+		routed or returns false to indicate that no nodes should be routed</li></ul></div><p>
+		Also bound to the script evaluation is a list of
+		<code class="code">nodes</code>
+		. The list of
+		<code class="code">nodes</code>
+		is a list of eligible
+		<code class="code">org.jumpmind.symmetric.model.Node</code>
+		objects. The current data column values and the old data column values
+		are bound to the script evaluation as Java object representations of the
+		column data. The columns are bound using the uppercase names of the
+		columns. Old values are bound to uppercase representations that are
+		prefixed with 'OLD_'.
+		</p>
+		
+		<p>
+		If you need access to any of the SymmetricDS services, then the instance
+		of
+		<code class="code">org.jumpmind.symmetric.ISymmetricEngine</code>
+		is accessible via the bound
+		<code class="code">engine</code>
+		variable.
+		</p>
+		
+		<p>
+		In the following example, the node_id is a combination of STORE_ID and
+		WORKSTATION_NUMBER, both of which are columns on the table that is being
+		routed.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-bsh','corp', 'store', 'bsh', 'targetNodes.add(STORE_ID +
+		"-" + WORKSTATION_NUMBER);', current_timestamp, current_timestamp); </pre><p>
+		</p>
+		
+		<p>
+		The same could also be accomplished by simply returning the node id. The
+		last line of a bsh script is always the return value.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-bsh','corp', 'store', 'bsh', 'STORE_ID + "-" +
+		WORKSTATION_NUMBER', current_timestamp, current_timestamp); </pre><p>
+		</p>
+		
+		<p>
+		The following example will synchronize to all nodes if the FLAG column
+		has changed, otherwise no nodes will be synchronized. Note that here we
+		make use of OLD_, which provides access to the old column value.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-flag-changed','corp', 'store', 'bsh', 'FLAG != null
+		&amp;&amp; !FLAG.equals(OLD_FLAG)', current_timestamp,
+		current_timestamp); </pre><p>
+		</p>
+		
+		<p>
+		The next example shows a script that iterates over each eligible node
+		and checks to see if the trimmed value of the column named STATION
+		equals the external_id.
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-trimmed-station','corp', 'store', 'bsh', 'for
+		(org.jumpmind.symmetric.model.Node node : nodes) { if (STATION != null
+		&amp;&amp; node.getExternalId().equals(STATION.trim())) {
+		targetNodes.add(node.getNodeId()); } }', current_timestamp,
+		current_timestamp); </pre><p>
+		</p>
+		</div>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-audit-table-router"></a>3.6.6.&nbsp;Audit Table Router</h3></div></div></div>
+		
+		
+		<p>
+		This router audits captured data by recording the change in an audit
+		table that the router creates and keeps up to date (as long as
+		<code class="code">auto.config.database</code>
+		is set to true.) The router creates a table named the same as the table
+		for which data was captured with the suffix of _AUDIT. It will contain
+		all of the same columns as the original table with the same data types
+		only each column is nullable with no default values.
+		</p>
+		
+		<p>
+		Three extra "AUDIT" columns are added to the table:
+		</p><div class="itemizedlist"><ul type="disc"><li>AUDIT_ID - the primary key of the table.</li><li>AUDIT_TIME - the time at which the change occurred.</li><li>AUDIT_EVENT - the DML type that happened to the
+		row.</li></ul></div><p>
+		</p>
+		
+		<p>
+		The following is an example of an audit router
+		</p><pre class="programlisting"> insert into SYM_ROUTER (router_id,
+		source_node_group_id, target_node_group_id, router_type, create_time,
+		last_update_time) values ('audit_at_corp','corp', 'local', 'audit',
+		current_timestamp, current_timestamp); </pre><p>
+		</p>
+		
+		<p>The audit router captures data for a group link. For the
+		audit router to work it must be associated with a node_group_link with
+		an action of type 'R'. The 'R' stands for 'only routes to'. In the above
+		example, we refer to a 'corp to local' group link. Here, local is a new
+		node_group created for the audit router. No nodes belong to the 'local'
+		node_group. If a trigger linked to an audit router fires on the corp
+		node, a new audit table will be created at the corp node with the new
+		data inserted.</p>
+		</div>
+		
+		
+		
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configuration-routing-external-select"></a>3.6.7.&nbsp;Utilizing External Select when Routing</h3></div></div></div>
+		
+		
+		
+		
+		<p>
+		There may be times when you wish to route based on a piece of data that
+		exists in a table other than the one being routed. The approach, first
+		discussed in
+		<a href="config.html#configuration-subselect-router" title="3.6.4.&nbsp;Subselect Router">Section&nbsp;3.6.4, &#8220;Subselect Router&#8221;</a>
+		, is to utilize an
+		<code class="literal">external_select</code>
+		to save away data in
+		<code class="literal">external_data</code>
+		, which can then be referenced during routing.
+		</p>
+		<p>
+		Reconsider subselect's Order / OrderLineItem example (found in
+		<a href="config.html#configuration-subselect-router" title="3.6.4.&nbsp;Subselect Router">Section&nbsp;3.6.4, &#8220;Subselect Router&#8221;</a>
+		), where routing for the line item is accomplished by linking to the
+		"header" Order row. As an alternate way of solving the problem, we will
+		now use External Select combined with a column match router.
+		</p>
+		<p>
+		In this version of the solution, the STORE_ID is captured from the Order
+		table in the EXTERNAL_DATA column when the trigger fires. The router is
+		configured to route based on the captured EXTERNAL_DATA to all nodes
+		whose external id matches the captured external data.
+		</p><pre class="programlisting">insert into SYM_TRIGGER
+		(trigger_id,source_table_name,channel_id,external_select,
+		last_update_time,create_time) values ('orderlineitem', 'orderlineitem',
+		'orderlineitem','select STORE_ID from order where
+		order_id=$(curTriggerValue).$(curColumnPrefix)order_id',
+		current_timestamp, current_timestamp); insert into SYM_ROUTER
+		(router_id, source_node_group_id, target_node_group_id, router_type,
+		router_expression, create_time, last_update_time) values
+		('corp-2-store-ext','corp', 'store', 'column',
+		'EXTERNAL_DATA=:EXTERNAL_ID', current_timestamp, current_timestamp); </pre><p>
+		</p>
+		
+		<p>The following variables can be used with the external select:</p>
+		
+		<div class="variablelist"><dl><dt><span class="term">
+		    		<span><strong class="command">$(curTriggerValue)</strong></span>
+				</span></dt><dd>
+		    		<p>
+		    		  Variable to be replaced with the NEW or OLD column alias provided by the trigger context, which is platform specific.
+		    		  For insert and update triggers, the NEW alias is used; for delete triggers, the OLD alias is used.
+		    		  For example, "$(curTriggerValue).COLUMN" becomes ":new.COLUMN" for an insert trigger on Oracle.
+		    		</p>
+				</dd><dt><span class="term">
+		            <span><strong class="command">$(curColumnPrefix)</strong></span>
+		        </span></dt><dd>
+		            <p>
+		                Variable to be replaced with the NEW_ or OLD_ column prefix for platforms that don't support column aliases.
+		                This is currently only used by the H2 database.  All other platforms will replace the variable with an empty string.
+		                For example "$(curColumnPrefix)COLUMN" becomes "NEW_COLUMN" on H2 and "COLUMN" on Oracle.
+		            </p>
+		        </dd></dl></div>
+		
+		<p>The advantage of this approach over the 'subselect'
+		approach is that it guards against the (somewhat unlikely) possibility
+		that the master Order table row might have been deleted before routing
+		has taken place. This external select solution also is a bit more
+		efficient than the 'subselect' approach, although the triggers produced
+		do run the extra external_select SQL inline with application database
+		updates.</p>
+		
+		</div>
+		
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-conflicts"></a>3.7.&nbsp;Conflicts</h2></div></div></div>
+	
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="conflicts"></a>3.7.1.&nbsp;Conflict Detection and Resolution</h3></div></div></div>
+    
+    <p> Conflict detection and resolution is new as of SymmetricDS 3.0. Conflict detection is the act of determining if an
+        insert, update or delete is in "conflict" due to the target data row not being consistent with the data at the source
+        prior to the insert/update/delete. Conflict resolution is the act of figuring out what to do when a conflict is
+        detected.
+    </p>
+    <p>
+        Conflict detection and resolution strategies are configured in the
+        <a href="data-model.html#table_conflict" title="A.2.&nbsp;CONFLICT">CONFLICT</a>
+        table. They are configured at minimum for a specific
+        <a href="data-model.html#table_node_group_link" title="A.22.&nbsp;NODE_GROUP_LINK">NODE_GROUP_LINK</a>
+        . The configuration can also be specific to a
+        <a href="data-model.html#table_channel" title="A.1.&nbsp;CHANNEL">CHANNEL</a>
+        and/or table.
+    </p>
+    <p>
+        Conflict detection is configured in the
+        <code class="literal">detect_type</code>
+        and
+        <code class="literal">detect_expression</code>
+        columns of
+        <a href="data-model.html#table_conflict" title="A.2.&nbsp;CONFLICT">CONFLICT</a>
+        . The value for
+        <code class="literal">detect_expression</code>
+        depends on the
+        <code class="literal">detect_type</code>
+        . Conflicts are detected while data is being loaded into a target system.
+        </p><div class="variablelist"><dl><dt><span class="term">
+                    <span><strong class="command">USE_PK_DATA</strong></span>
+                </span></dt><dd>
+                    <p>Indicates that only the primary key is used to detect a conflict. If a row exists with the same
+                        primary key, then no conflict is detected during an update or a delete. Updates and deletes rows are
+                        resolved using only the primary key columns. If a row already exists during an insert then a conflict
+                        has been detected.
+                    </p>
+                </dd><dt><span class="term">
+                    <span><strong class="command">USE_OLD_DATA</strong></span>
+                </span></dt><dd>
+                    <p>Indicates that all of the old data values are used to detect a conflict. Old data is the data
+                        values of the row on the source system prior to the change. If a row exists with the same old values
+                        on the target system as they were on the source system, then no conflict is detected during an update
+                        or a delete. If a row already exists during an insert then a conflict has been detected.
+                    </p>
+                    <p>Note that some platforms do not support comparisons of binary columns. Conflicts in binary column
+                    values will not be detected on the following platforms: DB2, DERBY, ORACLE, and SQLSERVER.
+                    </p>
+                </dd><dt><span class="term">
+                    <span><strong class="command">USE_CHANGED_DATA</strong></span>
+                </span></dt><dd>
+                    <p>Indicates that the primary key plus any data that has changed on the source system will be used to
+                        detect a conflict. If a row exists with the same old values on the target system as they were on the
+                        source system for the columns that have changed on the source system, then no conflict is detected
+                        during an update or a delete. If a row already exists during an insert then a conflict has been
+                        detected.
+                    </p>
+                    <p>Note that some platforms do not support comparisons of binary columns. Conflicts in binary column
+                    values will not be detected on the following platforms: DB2, DERBY, ORACLE, and SQLSERVER.
+                    </p>
+                    <p>The detect_expression can be used to exclude certain column names from being used.  In order to 
+                    exclude column1 and column2, the expression would
+                    be: <code class="literal">excluded_column_names=column1,column2</code> 
+                    </p>
+                </dd><dt><span class="term">
+                    <span><strong class="command">USE_TIMESTAMP</strong></span>
+                </span></dt><dd>
+                    <p>
+                        Indicates that the primary key plus a timestamp column (as configured in
+                        <code class="literal">detect_expression</code>
+                        ) will indicate whether a conflict has occurred. If the target timestamp column is not equal to the
+                        old source timestamp column, then a conflict has been detected. If a row already exists during an
+                        insert then a conflict has been detected.
+                    </p>
+                </dd><dt><span class="term">
+                    <span><strong class="command">USE_VERSION</strong></span>
+                </span></dt><dd>
+                    <p>
+                        Indicates that the primary key plus a version column (as configured in
+                        <code class="literal">detect_expression</code>
+                        ) will indicate whether a conflict has occurred. If the target version column is not equal to the old
+                        source version column, then a conflict has been detected. If a row already exists during an insert
+                        then a conflict has been detected.
+                    </p>
+                </dd></dl></div><p>
+    </p>
+          <div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3>
+            <p>Be aware that conflict detection will <span class="emphasis"><em>not</em></span> detect changes to binary columns in
+            the case where <code class="literal">use_stream_lobs</code> is true in the trigger for the table.  In addition, some
+            databases do not allow comparisons of binary columns whether <code class="literal">use_stream_lobs</code> is true or not. 
+           </p>
+      </div>
+      
+    <p>
+        The choice of how to resolve a detected conflict is configured via the <code class="literal">resolve_type</code> column. Depending on the setting, two additional boolean settings
+        may also be configured, namely <code class="literal">resolve_row_only</code> and <code class="literal">resolve_changes_only</code>, as discussed in the resolution settings below.
+        </p><div class="variablelist"><dl><dt><span class="term">
+                    <span><strong class="command">FALLBACK</strong></span>
+                </span></dt><dd>
+                    <p>
+                        Indicates that when a conflict is detected the system should automatically apply the changes anyways.
+                        If the source operation was an insert, then an update will be attempted. If the source operation was
+                        an update and the row does not exist, then an insert will be attempted. If the source operation was a
+                        delete and the row does not exist, then the delete will be ignored. The
+                        <code class="literal">resolve_changes_only</code>
+                        flag controls whether all columns will be updated or only columns that have changed will be updated
+                        during a fallback operation.
+                    </p>
+                </dd><dt><span class="term">
+                    <span><strong class="command">IGNORE</strong></span>
+                </span></dt><dd>
+                    <p>
+                        Indicates that when a conflict is detected the system should automatically ignore the incoming
+                        change. The
+                        <code class="literal">resolve_row_only</code>
+                        column controls whether the entire batch should be ignore or just the row in conflict.
+                    </p>
+                </dd><dt><span class="term">
+                    <span><strong class="command"><a name="conflict-resolution-manual"></a>MANUAL</strong></span>
+                </span></dt><dd>
+                    <p>
+                        Indicates that when a conflict is detected the batch will remain in error until manual intervention
+                        occurs. A row in error is inserted into the
+                        <a href="data-model.html#table_incoming_error" title="A.14.&nbsp;INCOMING_ERROR">INCOMING_ERROR</a>
+                        table.  The conflict detection id that detected the conflict is recorded (i.e., the <code class="literal">conflict_id</code> value from 
+                          <a href="data-model.html#table_conflict" title="A.2.&nbsp;CONFLICT">CONFLICT</a>), along with the old data, new data, and the "current data" 
+                          (by current data, we mean the unexpected data at the target which doesn't match the old data as expected)
+                            in columns <code class="literal">old_data, new_data,</code> and <code class="literal">cur_data</code>. 
+                        In order to resolve, the
+                        <code class="literal">resolve_data</code>
+                        column can be manually filled out which will be used on the next load attempt instead of the original
+                        source data. The
+                        <code class="literal">resolve_ignore</code>
+                        flag can also be used to indicate that the row should be ignored on the next load attempt.
+                    </p>
+                </dd><dt><span class="term">
+                    <span><strong class="command">NEWER_WINS</strong></span>
+                </span></dt><dd>
+                    <p>Indicates that when a conflict is detected by USE_TIMESTAMP or USE_VERSION that the either the
+                        source or the target will win based on the which side has the newer timestamp or higher version
+                        number.  The
+                        <code class="literal">resolve_row_only</code>
+                        column controls whether the entire batch should be ignore or just the row in conflict.
+                    </p>
+                </dd></dl></div><p>
+    </p>
+     <p>
+        For each configured conflict, you also have the ability to control if and how much "resolved" data is sent back to the node who's data change is in conflict.  This "ping back" behavior
+        is specified by the setting of the <code class="literal">ping_back</code>
+        column and can be one of the following values:
+        </p><div class="variablelist"><dl><dt><span class="term">
+                    <span><strong class="command">OFF</strong></span>
+                </span></dt><dd>
+                    <p>
+                       No data is sent back to the originating node, even if the resolved data doesn't match the data the node sent.
+                    </p>
+                </dd><dt><span class="term">
+                    <span><strong class="command">SINGLE_ROW</strong></span>
+                </span></dt><dd>
+                    <p>
+                       The resolved data of the single row in the batch that caused the conflict is sent back to the originating node.
+                    </p>
+                </dd><dt><span class="term">
+                    <span><strong class="command">REMAINING_ROWS.</strong></span>
+                </span></dt><dd>
+                    <p>
+                       The resolved data of the single row in the batch in conflict, along with the entire remainder of the batch, is sent back to the originating node.
+                    </p>
+                </dd></dl></div><p>
+        </p>
+           
+</div>
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-transforms"></a>3.8.&nbsp;Transforms</h2></div></div></div>
+	
+	
+<p>New as of SymmetricDS 2.4, SymmetricDS is now able to
+transform synchronized data by way of configuration (previously, for
+most cases a custom data loader would need to have been written). This
+transformation can take place on a source node or on a target node, as
+the data is being loaded or extracted. With this new feature you can,
+for example:</p>
+
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Copy a column from a source table to two (or more) target
+table columns,</p>
+</li><li>
+<p>Merge columns from two or more source tables into a single
+row in a target table,</p>
+</li><li>
+<p>Insert constants in columns in target tables based on
+source data synchronizations,</p>
+</li><li>
+<p>Insert multiple rows of data into a single target table
+based on one change in a source table,</p>
+</li><li>
+<p>Apply a Bean Shell script to achieve a custom transform
+when loading into the target database.</p>
+</li></ul></div>
+
+<p>These transformations can take place either on the target
+or on the source, and as data is either being extracted or loaded. In
+either case, the transformation is initiated due to existence of a
+source synchronization trigger. The source trigger creates the
+synchronization data, while the transformation configuration decides
+what to do with the synchronization data as it is either being extracted
+from the source or loaded into the target. You have the flexibility of
+defining different transformation behavior depending on whether the
+source change that triggered the synchronization was an Insert, Update,
+or Delete. In the case of Delete, you even have options on what exactly
+to do on the target side, be it a delete of a row, setting columns to
+specific values, or absolutely nothing at all.</p>
+
+<p>A few key concepts are important to keep in mind to
+understand how SymmetricDS performs transformations. The first concept
+is that of the "source operation" or "source DML type", which is the
+type of operation that occurred to generate the synchronization data in
+the first place (i.e., an insert, a delete, or an update). Your
+transformations can be configured to act differently based on the source
+DML type, if desired. When transforming, by default the DML action taken
+on the target matches that of the action taken on the row in the source
+(although this behavior can be altered through configuration if needed).
+If the source DML type is an Insert, for example, the resulting
+transformation DML(s) will be Insert(s).</p>
+
+<p>Another important concept is the way in which transforms
+are applied. Each source operation may map to one or more transforms and
+result in one or more operations on the target tables. Each of these
+target operations are performed as independent operations in sequence
+and must be "complete" from a SQL perspective. In other words, you must
+define columns for the transformation that are sufficient to fill in any
+primary key or other required data in the target table if the source
+operation was an Insert, for example.</p>
+
+<p>Please note that the transformation engine relies
+on a source trigger / router existing to supply the source data for the
+transformation. The transform configuration will never be used if the
+source table and target node group does not have a defined trigger /
+router combination for that source table and target node group.</p>
+
+<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="transform-data-tables"></a>3.8.1.&nbsp;Transform Configuration Tables</h3></div></div></div>
+
+
+<p>
+SymmetricDS stores its transformation configuration in two configuration
+tables,
+<a href="data-model.html#table_transform_table" title="A.36.&nbsp;TRANSFORM_TABLE">TRANSFORM_TABLE</a>
+and
+<a href="data-model.html#table_transform_column" title="A.37.&nbsp;TRANSFORM_COLUMN">TRANSFORM_COLUMN</a>
+. Defining a transformation involves configuration in both tables, with
+the first table defining which source and destination tables are
+involved, and the second defining the columns involved in the
+transformation and the behavior of the data for those columns. We will
+explain the various options available in both tables and the various
+pre-defined transformation types.
+
+</p>
+
+<p>
+To define a transformation, you will first define the source table and
+target table that applies to a particular transformation. The source and
+target tables, along with a unique identifier (the transform_id column)
+are defined in
+<a href="data-model.html#table_transform_table" title="A.36.&nbsp;TRANSFORM_TABLE">TRANSFORM_TABLE</a>
+. In addition, you will specify the source_node_group_id and
+target_node_group_id to which the transform will apply, along with
+whether the transform should occur on the Extract step or the Load step
+(transform_point). All of these values are required.
+</p>
+
+<p>
+Three additional configuration settings are also defined at the
+source-target table level: the order of the transformations, the
+behavior when deleting, and whether an update should always be attempted
+first. More specifically,
+</p><div class="itemizedlist"><ul type="disc"><li>transform_order: For a single source operation that
+is mapped to a transformation, there could be more than one target
+operation that takes place. You may control the order in which the
+target operations are applied through a configuration parameter defined
+for each source-target table combination. This might be important, for
+example, if the foreign key relationships on the target tables require
+you to execute the transformations in a particular order.</li><li>
+column_policy: Indicates whether unspecified columns are passed thru or
+if all columns must be explicitly defined. The options include:
+<div class="itemizedlist"><ul type="circle"><li>SPECIFIED - Indicates that only the transform
+columns that are defined will be the ones that end up as part of the
+transformation.</li><li>IMPLIED - Indicates that if not specified, then
+columns from the source are passed through to the target. This is useful
+if you just want to map a table from one name to anther or from one
+schema to another. It is also useful if you want to transform a table,
+but also want to pass it through. You would define an implied transform
+from the source to the target and would not have to configure each
+column.</li></ul></div>
+</li><li>
+delete_action: When a source operation of Delete takes place, there are
+three possible ways to handle the transformation at the target. The
+options include:
+<div class="itemizedlist"><ul type="circle"><li>NONE - The delete results in no target changes.</li><li>DEL_ROW - The delete results in a delete of the row
+as specified by the pk columns defined in the transformation
+configuration.</li><li>UPDATE_COL - The delete results in an Update
+operation on the target which updates the specific rows and columns
+based on the defined transformation.</li></ul></div>
+</li><li>
+update_first: This option overrides the default behavior for an Insert
+operation. Instead of attempting the Insert first, SymmetricDS will
+always perform an Update first and then fall back to an Insert if that
+fails. Note that, by default, fall back logic
+<span class="emphasis"><em>always</em></span>
+applies for Insert and Updates. Here, all you a specifying is whether to
+always do an Update first, which can have performance benefits under
+certain situations you may run into.
+</li></ul></div><p>
+</p>
+
+<p>
+For each transformation defined in
+<a href="data-model.html#table_transform_table" title="A.36.&nbsp;TRANSFORM_TABLE">TRANSFORM_TABLE</a>
+, the columns to be transformed (and how they are transformed) are
+defined in
+<a href="data-model.html#table_transform_column" title="A.37.&nbsp;TRANSFORM_COLUMN">TRANSFORM_COLUMN</a>
+. This column-level table typically has several rows for each
+transformation id, each of which defines the source column name, the
+target column name, as well as the following details:
+</p><div class="itemizedlist"><ul type="disc"><li>include_on: Defines whether this entry applies to
+source operations of Insert (I), Update (U), or Delete (D), or any
+source operation.</li><li>pk: Indicates that this mapping is used to define
+the "primary key" for identifying the target row(s) (which may or may
+not be the true primary key of the target table). This is used to define
+the "where" clause when an Update or Delete on the target is occurring.
+At least one row marked as a pk should be present for each transform_id.</li><li>transform_type, transform_expression: Specifies how
+the data is modified, if at all. The available transform types are
+discussed below, and the default is 'copy', which just copies the data
+from source to target.</li><li>transform_order: In the event there are more than
+one columns to transform, this defines the relative order in which the
+transformations are applied.</li></ul></div><p>
+</p>
+</div>
+
+<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="transform-data-types"></a>3.8.2.&nbsp;Transformation Types</h3></div></div></div>
+
+	<p>
+	There are several pre-defined transform types available in SymmetricDS.
+	Additional ones can be defined by creating and configuring an extension
+	point which implements the
+	<code class="code">IColumnTransform</code>
+	interface. The pre-defined transform types include the following (the
+	transform_type entry is shown in parentheses):
+	</p><div class="itemizedlist"><ul type="disc"><li><b xmlns:fo="http://www.w3.org/1999/XSL/Format">Copy Column Transform ('copy')</b>: This transformation
+	type copies the source column value to the target column. This is the
+	default behavior.</li><li><b xmlns:fo="http://www.w3.org/1999/XSL/Format">Remove Column Transform ('remove')</b>: This
+	transformation type removes the source column. This transform type is
+	only valid for a table transformation type of 'IMPLIED' where all the
+	columns from the source are automatically copied to the target.</li><li><b xmlns:fo="http://www.w3.org/1999/XSL/Format">Constant Transform ('const')</b>: This transformation
+	type allows you to map a constant value to the given target column. The
+	constant itself is placed in transform_expression.</li><li>
+	<b xmlns:fo="http://www.w3.org/1999/XSL/Format">Variable Transform ('variable')</b>: This transformation type allows you to
+	map a built-in dynamic variable to the given target column. The variable
+	name is placed in transform_expression. The following variables are
+	available:
+	<code class="code">system_date</code>
+	is the current system date,
+	<code class="code">system_timestamp</code>
+	is the current system date and time,
+	<code class="code">source_node_id</code>
+	is the node id of the source,
+	<code class="code">target_node_id</code>
+	is the node id of the target,
+	<code class="code">null</code>
+	is a null value, and <code class="code">old_column_value</code> is the column's old value prior to the DML operation,
+    <code class="code">source_table_name</code>
+    is the name of the source table as captured in the trigger hist table,
+    <code class="code">source_catalog_name</code>
+    is the name of the source catalog as captured in the trigger hist table,
+    <code class="code">source_schema_name</code>
+    is the name of the source schema as captured in the trigger hist table.
+	</li><li><b xmlns:fo="http://www.w3.org/1999/XSL/Format">Additive Transform ('additive')</b>: This
+	transformation type is used for numeric data. It computes the change
+	between the old and new values on the source and then adds the change to
+	the existing value in the target column. That is, target = target +
+	multiplier (source_new - source_old), where multiplier is a constant
+	found in the transform_expression (default is 1 if not specified). For
+	example, if the source column changed from a 2 to a 4, the target column
+	is currently 10, and the multiplier is 3, the effect of the transform
+	will be to change the target column to a value of 16 ( 10+3*(4-2) =&gt;
+	16 ). Note that, in the case of deletes, the new column value is
+	considered 0 for the purposes of the calculation.</li><li>
+	<b xmlns:fo="http://www.w3.org/1999/XSL/Format">Substring Transform ('substr')</b>: This transformation computes a substring
+	of the source column data and uses the substring as the target column
+	value. The transform_expression can be a single integer (
+	<code class="code">n</code>
+	, the beginning index), or a pair of comma-separated integers (
+	<code class="code">n,m</code>
+	- the beginning and ending index). The transform behaves as the Java
+	substring function would using the specified values in
+	transform_expression.
+	</li><li><b xmlns:fo="http://www.w3.org/1999/XSL/Format">Multiplier Transform ('multiply')</b>: This
+	transformation allows for the creation of multiple rows in the target
+	table based on the transform_expression. This transform type can only be
+	used on a primary key column. The transform_expression is a SQL
+	statement that returns the list to be used to create the multiple
+	targets.</li><li><b xmlns:fo="http://www.w3.org/1999/XSL/Format">Lookup Transform ('lookup')</b>: This transformation
+	determines the target column value by using a query, contained in
+	transform_expression to lookup the value in another table. The query
+	must return a single row, and the first column of the query is used as
+	the value. Your query references source column names by prefixing with a
+	colon (e.g., :MY_COLUMN).</li><li>
+	<b xmlns:fo="http://www.w3.org/1999/XSL/Format">BeanShell Script Transform ('bsh')</b>: This transformation allows you to
+	provide a Bean Shell script in transform_expression and executes the
+	script at the time of transformation. Some variables are provided to the
+	script:
+	<code class="code">COLUMN_NAME</code>
+	is a variable for a source column in the row, where the variable name is
+	the column name in uppercase;
+	<code class="code">currentValue</code>
+	is the value of the current source column;
+	<code class="code">oldValue</code>
+	is the old value of the source column for an updated row;
+	<code class="code">sqlTemplate</code>
+	is a
+	<code class="code">org.jumpmind.db.sql.ISqlTemplate</code>
+	object for querying or updating the database;
+	<code class="code">channelId</code>
+	is a reference to the channel on which the transformation is happening;
+	<code class="code">sourceNode</code>
+	is a
+	<code class="code">org.jumpmind.symmetric.model.Node</code>
+	object that represents the node from where the data came;
+	<code class="code">targetNode</code>
+	is a
+	<code class="code">org.jumpmind.symmetric.model.Node</code>
+	object that represents the node where the data is being loaded.
+	</li><li>
+    <b xmlns:fo="http://www.w3.org/1999/XSL/Format">Java Transform ('java')</b>: Use Java code in the transform expression that is included in the
+    transform method of a class that extends JavaColumnTransform.  The class is compiled 
+    whenever the transform expression changes and kept in memory for runtime.
+    The code must return a String for the new value of the column being mapped. 
+    The following variables are available:
+    <code class="code">platform</code>
+    is the IDatabasePlatform that contains objects for the database platform, such as
+    DatabaseInfo, IDdlReader, IDdlBuilder, and ISqlTemplate. 
+    <code class="code">context</code>
+    is the DataContext that contains information about current row and the data loader session, such as
+    Batch, Table, and CsvData. 
+    <code class="code">column</code>
+    is the TransformColumn that contains information from the TRANSFORM_COLUMN configuration.
+    <code class="code">data</code>
+    is the TransformedData that contains information about the source and target values being transformed,
+    including the TransformTable.
+    <code class="code">sourceValues</code>
+    is a Map&lt;String, String&gt; contain all source column values for the row.
+    <code class="code">newValue</code>
+    is a String for the new value of the column.
+    <code class="code">oldValue</code>
+    is a String for the old value of the column if the event is an update or delete.
+    </li><li><b xmlns:fo="http://www.w3.org/1999/XSL/Format">Identity Transform ('identity')</b>: This
+	transformation allows you to insert into an identity column by computing
+	a new identity, not copying the actual identity value from the source.
+	</li><li>
+	<b xmlns:fo="http://www.w3.org/1999/XSL/Format">Mathematical Transform ('math')</b>: This transformation allows you to 
+	perform mathematical equations in the transform expression. Some 
+	variables are provided to the script:
+	<code class="code">#{COLUMN_NAME}</code>
+	is a variable for a source column in the row, where the variable name
+	is the column name in uppercase;
+	<code class="code">#{currentValue}</code>
+	is the value of the current source column;
+	<code class="code">#{oldValue}</code>
+	is the old value of the source column for an updated row.
+	</li><li>
+	<b xmlns:fo="http://www.w3.org/1999/XSL/Format">Copy If Changed Transform ('copyIfChanged')</b>:  This transformation will copy the value to the target column if the source value has changed.  More
+	specifically, the copy will occur if the the old value of the source does not equal the new value.  If the old and new are, in fact, equal, then either
+	the column will be ignored or the row will be ignored, based on the setting of the transform expression.  If the transform expression is euqal
+	to the string 'IgnoreColumn', the column will be ignored; otherwise, the row will be ignored.
+	</li><li>
+	<b xmlns:fo="http://www.w3.org/1999/XSL/Format">Value Map Transform ('valueMap')</b>:  This transformation allows for simple value substitutions through use of the transform expression.
+	The transform expresion should consist of a space separated list of value pairs of the format sourceValue=TargetValue.  The column value is used to 
+	locate the correct sourceValue, and the transform will change the value into the corresponding targetValue.  A sourceValue of * can be used to
+	represent a default target value in the event that the sourceValue is not found.  Otherwise, if no default value is found,
+	the result will be null.  For example, consider the following transform expression:  s1=t1 s2=t2 s3=t3 *=t4.  A source value of
+	s1 will be transformed to t1, s2 to t2, s3 to t3, s4 to t4, s5 to t4, null to t4, etc.
+	</li><li>
+	<b xmlns:fo="http://www.w3.org/1999/XSL/Format">Clarion Date Time ('clarionDateTime')</b>:  Convert a Clarion date with optional time into a timestamp.  Clarion dates are stored as the number of days
+	since December 28, 1800, while Clarion times are stored as hundredths of a second since midnight, plus one.  Use a source column of the Clarion date
+	and a target column of the timestamp.  Optionally, in the transform expression, enter the name of the Clarion time column.
+	</li><li>
+	<b xmlns:fo="http://www.w3.org/1999/XSL/Format">Columns To Rows ('columnsToRowsKey' and 'columnsToRowsValue')</b>:  Convert column values from a single source row into a row per column value
+	at the target.  Two column mappings are needed to complete the work: use "columnsToRowsKey" to map which source column is used,
+	and use "columnsToRowsValue" to map the value.  The "columnsToRowsKey" mapping requires an expression in the format of
+	"column1=key1,column2=key2" to list the source column names and which key value is stored in the target column.
+	The "columnsToRowsValue" mapping sets the column's value at the target and allows an optional expression: 
+	"changesOnly=true" to convert only rows when the old and new values have changed; "ignoreNulls=true" to convert only rows that are not null. 
+	For example, column "fieldid" mapped as "columnsToRowsKey" with expression of "user1=1,user2=2" and column "color" mapped as
+	"columnsToRowsValue" would convert a row with columns named "user1" and "user2" containing values "red" and "blue" into two rows with columns
+	"fieldid" and "color" containing a row of "1" and "red" and a row of "2" and "blue". 
+	</li></ul></div><p>
+	</p>
+	</div>
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-load-filters"></a>3.9.&nbsp;Load Filters</h2></div></div></div>
+		
+		<p>
+		New as of SymmetricDS 3.1, SymmetricDS is now capable of taking actions
+		upon the load of certain data via configurable load filters. This new
+		configurable option is in additon to the already existing option of
+		writing a class that implements
+		<a href="developer.html#extensions-data-loader-filter" title="6.1.2.&nbsp;IDatabaseWriterFilter">IDatabaseWriterFilter</a>
+		. A configurable load filter watches for specific data that is being
+		loaded and then takes action based on the load of that data.
+		</p>
+		
+		<p>Specifying which data to action is done by specifying a
+		souce and target node group (data extracted from this node group, and
+		loaded into that node group), and a target catalog, schema and table
+		name. You can decide to take action on rows that are inserted, updated
+		and/or deleted, and can also further delineate which rows of the target
+		table to take action on by specifying additional criteria in the bean
+		shell script that is executed in response to the loaded data. As an
+		example, old and new values for the row of data being loaded are
+		available in the bean shell script, so you can action rows with a
+		certain column value in old or new data.</p>
+		
+		<p>The action taken is based on a bean shell script that you
+		can provide as part of the configuration. Actions can be taken at
+		different points in the load process including before write, after
+		write, at batch complete, at batch commit and/or at batch rollback.</p>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-load-filter-config"></a>3.9.1.&nbsp;Load Filter Configuration Table</h3></div></div></div>
+		
+		
+		<p>
+		SymmetricDS stores its load filter configuration in a single table
+		called
+		<a href="data-model.html#table_load_filter" title="A.15.&nbsp;LOAD_FILTER">LOAD_FILTER</a>
+		. The load filter table allows you to specify the following:
+		</p><div class="itemizedlist"><ul type="disc"><li>Load Filter Type ('load_filter_type'): The type of
+		load filter. Today only Bean Shell is supported ('BSH'), but SQL scripts
+		may be added in a future release.</li><li>Source Node Group ('source_node_group_id'): The
+		source node group for which you would like to watch for changes.</li><li>Target Node Group ('target_node_group_id'): The
+		target node group for which you would like to watch for changes. The
+		source and target not groups are used together to identify the node
+		group link for which you would like to watch for changes (i.e. When the
+		Server node group sends data to a Client node group).</li><li>Target Catalog ('target_catalog_name'): The name of
+		the target catalog for which you would like to watch for changes.</li><li>Target Schema ('target_schema_name'): The name of
+		the target schema for which you would like to watch for changes.</li><li>Target Table ('target_table_name'): The name of the
+		target table for which you would like to watch for changes. The target
+		catalog, target schema and target table name are used together to fully
+		qualify the table for which you would like to watch for changes.</li><li>Filter on Update ('filter_on_update'): Determines
+		whether the load filter takes action (executes) on a database update
+		statement.</li><li>Filter on Insert ('filter_on_insert'): Determines
+		whether the load filter takes action (executes) on a database insert
+		statement.</li><li>Filter on Delete ('filter_on_delete'): Determines
+		whether the load filter takes action (executes) on a database delete
+		statement.</li><li>Before Write Script ('before_write_script'): The
+		script to execute before the database write occurs.</li><li>After Write Script ('after_write_script'): The
+		script to execute after the database write occurs.</li><li>Batch Complete Script ('batch_complete_script'):
+		The script to execute after the entire batch completes.</li><li>Batch Commit Script ('batch_commit_script'): The
+		script to execute after the entire batch is committed.</li><li>Batch Rollback Script ('batch_rollback_script'):
+		The script to execute if the batch rolls back.</li><li>Handle Error Script ('handle_error_script'): A
+		script to execute if data cannot be processed.</li><li>Load Filter Order ('load_filter_order'): The order
+		in which load filters should execute if there are multiple scripts
+		pertaining to the same source and target data.</li></ul></div><p>
+		</p>
+		</div>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-load-filter-variables"></a>3.9.2.&nbsp;Variables available to Data Load Filters</h3></div></div></div>
+		
+		
+		<p>
+		As part of the bean shell load filters, SymmetricDS provides certain
+		variables for use in the bean shell script. Those variables include:
+		</p><div class="itemizedlist"><ul type="disc"><li>Symmetric Engine ('ENGINE'): The Symmetric engine
+		object.</li><li>Source Values ('&lt;COLUMN_NAME&gt;'): The source
+		values for the row being inserted, updated or deleted.</li><li>Old Values ('OLD_&lt;COLUMN_NAME&gt;'): The old
+		values for the row being inserted, updated or deleted.</li><li>Data Context ('CONTEXT'): The data context object
+		for the data being inserted, updated or deleted. .</li><li>Table Data ('TABLE'): The table object for the
+		table being inserted, updated or deleted.</li></ul></div><p>
+		</p>
+		</div>
+		
+		<div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="data-load-filter-examples"></a>3.9.3.&nbsp;Data Load Filter Example</h3></div></div></div>
+		
+		
+		<p>
+		The following is an example of a load filter that watches a table named
+		TABLE_TO_WATCH being loaded from the Server Node Group to the Client
+		Node Group for inserts or updates, and performs an initial load on a
+		table named "TABLE_TO_RELOAD" for KEY_FIELD on the reload table equal to
+		a column named KEY_FIELD on the TABLE_TO_WATCH table.
+		</p><pre class="programlisting"> insert into sym_load_filter
+		(LOAD_FILTER_ID, LOAD_FILTER_TYPE, SOURCE_NODE_GROUP_ID,
+		TARGET_NODE_GROUP_ID, TARGET_CATALOG_NAME, TARGET_SCHEMA_NAME,
+		TARGET_TABLE_NAME, FILTER_ON_UPDATE, FILTER_ON_INSERT, FILTER_ON_DELETE,
+		BEFORE_WRITE_SCRIPT, AFTER_WRITE_SCRIPT, BATCH_COMPLETE_SCRIPT,
+		BATCH_COMMIT_SCRIPT, BATCH_ROLLBACK_SCRIPT, HANDLE_ERROR_SCRIPT,
+		CREATE_TIME, LAST_UPDATE_BY, LAST_UPDATE_TIME, LOAD_FILTER_ORDER,
+		FAIL_ON_ERROR) values
+		('TABLE_TO_RELOAD','BSH','Client','Server',NULL,NULL,
+		'TABLE_TO_WATCH',1,1,0,null,
+		'engine.getDataService().reloadTable(context.getBatch().getSourceNodeId(),
+		table.getCatalog(), table.getSchema(), "TABLE_TO_RELOAD","KEY_FIELD=''"
+		+ KEY_FIELD + "''");'
+		,null,null,null,null,sysdate,'userid',sysdate,1,1); </pre><p>
+		</p>
+		</div>
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-grouplets"></a>3.10.&nbsp;Grouplets</h2></div></div></div>
+		
+		<p>
+        As you probably know by now, SymmetricDS stores its single configuration centrally and distributes it to all nodes.   By default, a trigger-router is in effect for all nodes in the source node group or target node group.  Triggers will be established
+        on each node that is a member of the source node, and changes will be routed to all relevant nodes that are members of the target node group.  If, for example, the router routes to "all" nodes,
+        "all" means every node that is in the target node group.  This is the default behavior of SymmetricDS.
+        </p>
+        <p>
+        Once in production, however, you will likely find you need or want to make configuration changes to triggers and routers as new features are rolled out to your network of SymmetricDS nodes.
+        You may, for example, wish to "pilot" a new configuration, containing new synchronizations, only on specific nodes initially, and then increase the size of the pilot over time.
+        SymmetricDS' does provide the ability to specify that only particular trigger-router combinations are applicable to particular nodes for this purpose.  It does this
+        by allowing you to define an arbitray collection of nodes, called a "grouplet", and then choosing which trigger-routers apply to the normal set of nodes (the default behavior)
+        and which apply just to nodes in one or more "grouplets".  This allows you, essentially, to filter the list of nodes that would otherwise be included as source nodes and/or target nodes.
+        Through the use of grouplets, you can, for example, specify a subset of nodes on which a given trigger would be created.  It also allows you to
+        specify a subset of the normal set of nodes a change would be routed to.  This behaviour is in addition to, and occurs before, any subsetting or filtering the router might otherwise do.
+        </p>
+        <p>
+        In its simplest form, a grouplet is just an arbitrary collection of nodes.  To define a grouplet, you start by creating a grouplet with a unique id, a description, and a link policy,
+        as defined in  <a href="data-model.html#table_grouplet" title="A.11.&nbsp;GROUPLET">GROUPLET</a>.  To defined which nodes are members of (or are not members of) a grouplet, you provide a list of external ids of the nodes
+        in <a href="data-model.html#table_grouplet_link" title="A.12.&nbsp;GROUPLET_LINK">GROUPLET_LINK</a>.  How those external ids are used varies based on the grouplet link policy.
+        The <code class="literal">grouplet_link_policy</code> can be either I or E, representing an "inclusive" list of nodes or an "exclusive" list of
+        nodes, respectively.  In the case of "inclusive", you'll be listing each external id to be included in the grouplet.  In the case of exclusive, all nodes will be included in
+        the grouplet <span class="emphasis"><em>except</em></span> ones which have an external id in the list of external ids.
+        </p>
+
+        <p>
+        Once you have defined your grouplet and which nodes are members of a grouplet, you can tie a grouplet to a given trigger-router through
+        the use of <a href="data-model.html#table_trigger_router_grouplet" title="A.41.&nbsp;TRIGGER_ROUTER_GROUPLET">TRIGGER_ROUTER_GROUPLET</a>.
+        If a particular trigger-router does not appear in this table, SymmetricDS behaves as normal.
+        If, however, an entry for a particular trigger-router appears in this table,  the default behavior is overridden based on the <code class="literal">grouplet_id</code> and <code class="literal">applies_when</code> settings.
+        The grouplet id provides the node list, and the <code class="literal">applies_when</code> indicates whether the grouplet nodes are to be used to filter the source node list, the target node list,
+        or both (settings are "S", "T", and "B", respectively).  Nodes that survive the filtering process on as a source will have a trigger defined, and nodes that survive the filtering process
+        as a target are eligible nodes that can be routed to.</p>
+         <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="grouplet-example"></a>3.10.1.&nbsp;Grouplet Example</h3></div></div></div>
+            
+
+        <p>
+
+        At this point, an example would probably be useful.  Picture the case where you have 100 retail stores (each containing one database, and each a member of the "store" node group)
+        and a central office database (external id of corp, and a member of the "corp" node group ). You wish to pilot two new trigger and routers
+        for a new feature on your point-of-sale software (one which moves data from corp to store, and one which moves data from store to corp), but you only want the triggers to be installed on 10 specific stores that represent your "pilot" stores.  In this case,
+        the simplest approach would be to define a grouplet with, say, a grouplet id of "pilot".  We'd use a grouplet link policy of "inclusive", and list each of the 10 external ids
+        in the <a href="data-model.html#table_grouplet_link" title="A.12.&nbsp;GROUPLET_LINK">GROUPLET_LINK</a> table.
+        </p>
+        <p>
+        For the trigger-router meant to send data from corp to store, we'd create an entry in <a href="data-model.html#table_trigger_router_grouplet" title="A.41.&nbsp;TRIGGER_ROUTER_GROUPLET">TRIGGER_ROUTER_GROUPLET</a> for
+        our grouplet id of "pilot", and we'd specify "T" (target) as the applies-when setting.  In this way, the source node list is not filtered, but the target node list used during routing
+        will filter the potential target nodes to just our pilot stores.  For the trigger-router meant to send data from a pilot store back to corp, we would have the grouplet apply when
+        the node is in the source node list (i.e., <code class="literal">applies_when</code> will be "S").  This will cause the trigger to only be created for stores in the pilot list and not other stores.
+        </p>
+        <p>An important thing to mention in this example:  Since your grouplet only included the store nodes, you can't simply specify "both" for the applies when setting.  For the corp-to-store trigger,
+        for example, if you had said "both", no trigger would have been installed in corp since the grouplet nodes represent all possible source nodes as well as target nodes, and "corp" is not in the list!
+        The same is true for the store to corp trigger-router as well.  You could, however, use "both" as the applies when if you had included the "corp" external id in with the list of the 10 pilot store external ids.
+        </p>
+     </div>
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-parameters"></a>3.11.&nbsp;Parameters</h2></div></div></div>
+		
+		<p>Parameters can be used to help tune and configure your SymmetricDS configuration.  Parameters can be set for an individual node or for all nodes in your network.</p>
+		<p>See <a href="parameters.html" title="Appendix&nbsp;B.&nbsp;Parameters">Appendix&nbsp;B, <i xmlns:xlink="http://www.w3.org/1999/xlink">Parameters</i></a>, for a complete list of parameters.</p>
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-export"></a>3.12.&nbsp;Export</h2></div></div></div>
+	
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-import"></a>3.13.&nbsp;Import</h2></div></div></div>
+	
+	</div>
+	<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuration-uninstall"></a>3.14.&nbsp;Uninstall</h2></div></div></div>
+	
+	</div>
+	
+
+</div><div xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="30%" align="left"><a accesskey="p" href="setup.html">Prev</a>&nbsp;</td><td width="40%" align="center"><a accesskey="h" href="user-guide.html">Home</a></td><td width="30%" align="right">&nbsp;<a accesskey="n" href="manage.html">Next</a></td></tr><tr><td width="30%" align="left" valign="top">Chapter&nbsp;2.&nbsp;Setup&nbsp;</td><td width="40%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.symmetricds.org/" title="SymmetricDS">SymmetricDS
+                                        </a></span></td><td width="30%" align="right" valign="top">&nbsp;Chapter&nbsp;4.&nbsp;Manage</td></tr></table></div></body></html>
