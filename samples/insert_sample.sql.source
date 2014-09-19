@@ -147,19 +147,3 @@ values('sale_tender_line_item','store_2_corp', 200, current_timestamp, current_t
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
 values('sale_transaction_dead','store_2_corp', 200, current_timestamp, current_timestamp);
-
---customize
-insert into sym_channel 
-(channel_id, processing_order, max_batch_size, enabled, description)
-values('users', 1, 100000, 1, 'users data');
-
---customize
-
-insert into sym_trigger_router 
-(trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('users','corp_2_store', 100, current_timestamp, current_timestamp);
-
---customize
-insert into sym_trigger 
-(trigger_id,source_table_name,channel_id,last_update_time,create_time)
-values('users','users','users',current_timestamp,current_timestamp);

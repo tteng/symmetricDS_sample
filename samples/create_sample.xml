@@ -26,12 +26,23 @@
 <database name="REACH_XP_ONE">
 
     <table name="USERS">
-      <column name="ID" type="INTEGER" required="true" primaryKey="true" size="38,0" />
-      <column name="NAME" type="VARCHAR" size="30" required="true" />
-      <column name="EMAIL" type="VARCHAR" size="30" required="true" />
-      <column name="DESCRIPTION" type="CLOB" />
-      <column name="CREATED_AT" type="DATE" />
-      <column name="UPDATED_AT" type="DATE" />
+        <column name="ID" type="INTEGER" required="true" primaryKey="true" size="38,0" />
+        <column name="NAME" type="VARCHAR" size="30" required="true" />
+        <column name="EMAIL" type="VARCHAR" size="30" required="true" />
+        <column name="DESCRIPTION" type="CLOB" />
+        <column name="CREATED_AT" type="DATE" />
+        <column name="UPDATED_AT" type="DATE" />
+
+<!--
+        <index name="EMAIL_IDX"> 
+          <index-column name="EMAIL"/>
+        </index>
+-->
+
+        <unique name="UNIQUE_EMAIL">
+          <unique-column name="EMAIL"/> 
+        </unique>
+
     </table>
 
     <table name="item">
